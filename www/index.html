@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swim College - Online Booking</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- Animated Background -->
+  <div class="bg-container">
+    <!-- Moving Gradient -->
+    <div class="bg-gradient"></div>
+    
+    <!-- Animated Waves -->
+    <div class="waves">
+      <div class="wave"></div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+    </div>
+    
+    <!-- Floating Bubbles -->
+    <div class="bubbles">
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+    </div>
+    
+    <!-- Light Rays -->
+    <div class="rays">
+      <div class="ray" style="--rotation: -30deg;"></div>
+      <div class="ray" style="--rotation: -15deg;"></div>
+      <div class="ray" style="--rotation: 0deg;"></div>
+      <div class="ray" style="--rotation: 15deg;"></div>
+      <div class="ray" style="--rotation: 30deg;"></div>
+    </div>
+  </div>
+
+  <!-- Login Page -->
+  <div id="login-page" class="login-page">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="login-logo">
+          <img src="images/logo.png" alt="Swim College">
+        </div>
+        <h1>Swim College</h1>
+        <p>Online Booking System</p>
+      </div>
+      
+      <div class="login-body">
+        <div id="login-error" class="alert">
+          <i class="fas fa-exclamation-circle"></i>
+          <span id="error-text"></span>
+        </div>
+        
+        <div class="input-group">
+          <label class="input-label">Username</label>
+          <input type="text" id="username" class="input-field" placeholder="Enter username">
+        </div>
+        
+        <div class="input-group">
+          <label class="input-label">Password</label>
+          <input type="password" id="password" class="input-field" placeholder="Enter password">
+        </div>
+        
+        <button type="button" id="login-btn" class="btn btn-primary">
+          <i class="fas fa-sign-in-alt"></i>
+          <span>Sign In</span>
+        </button>
+        
+        <button type="button" id="register-btn" class="btn btn-secondary">
+          <i class="fas fa-user-plus"></i>
+          <span>Create Account</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="app" class="app">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-brand">
+          <img src="images/logo.png" alt="Logo">
+          <span>Swim College</span>
+        </div>
+        <div class="user-info">
+          <h3 id="user-name">Loading...</h3>
+          <p>Active Member</p>
+        </div>
+      </div>
+      
+      <nav class="nav-menu">
+        <a class="nav-item active" data-screen="home">
+          <i class="fas fa-home"></i>
+          <span>Dashboard</span>
+        </a>
+        <a class="nav-item" data-screen="bookings">
+          <i class="fas fa-calendar-check"></i>
+          <span>My Bookings</span>
+        </a>
+        <a class="nav-item" data-screen="courses">
+          <i class="fas fa-graduation-cap"></i>
+          <span>Classes</span>
+        </a>
+        <a class="nav-item" data-screen="subscriptions">
+          <i class="fas fa-id-card"></i>
+          <span>Subscriptions</span>
+        </a>
+        <a class="nav-item" data-screen="attendances">
+          <i class="fas fa-check-circle"></i>
+          <span>Attendance</span>
+        </a>
+        <a class="nav-item" data-screen="waitlist">
+          <i class="fas fa-clock"></i>
+          <span>Waitlist</span>
+        </a>
+        <a class="nav-item" data-screen="cancellations">
+          <i class="fas fa-times-circle"></i>
+          <span>Cancellations</span>
+        </a>
+        <a class="nav-item" data-screen="barcode">
+          <i class="fas fa-barcode"></i>
+          <span>My Barcode</span>
+        </a>
+        <a class="nav-item" data-screen="profile">
+          <i class="fas fa-user-circle"></i>
+          <span>Profile</span>
+        </a>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <button id="logout-btn" class="btn-logout">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      
+      <!-- Dashboard / Home Screen -->
+      <div id="screen-home" class="screen active">
+        <div class="page-header">
+          <h1 class="page-title">Dashboard</h1>
+          <p class="page-subtitle">Welcome back! Here's your overview.</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon ocean">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="stat-value" id="stat-name">-</div>
+            <div class="stat-label">Member</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon cyan">
+              <i class="fas fa-calendar"></i>
+            </div>
+            <div class="stat-value" id="stat-expiry">-</div>
+            <div class="stat-label">Expires</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon tiffany">
+              <i class="fas fa-euro-sign"></i>
+            </div>
+            <div class="stat-value" id="stat-balance">-</div>
+            <div class="stat-label">Balance</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon blue">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stat-value" id="stat-bookings">-</div>
+            <div class="stat-label">Bookings</div>
+          </div>
+        </div>
+
+        <!-- Upcoming Classes -->
+        <div class="glass-card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-calendar-day"></i>
+              Upcoming Classes
+            </h3>
+          </div>
+          <div class="card-body">
+            <div id="upcoming-list">
+              <div class="loading">
+                <div class="spinner"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bookings Screen -->
+      <div id="screen-bookings" class="screen">
+        <div class="page-header">
+          <h1 class="page-title">My Bookings</h1>
+          <p class="page-subtitle">All your class reservations</p>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-list"></i>
+              All Bookings
+            </h3>
+          </div>
+          <div class="card-body">
+            <div id="bookings-list">
+              <div class="loading">
+                <div class="spinner"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book Class Screen -->
+      <div id="screen-courses" class="screen">
+        <div class="page-header">
+          <h1 class="page-title">Book a Class</h1>
+          <p class="page-subtitle">Select date and time to book your swim</p>
+        </div>
+
+        <!-- Step 1: Select Class Type -->
+        <div class="glass-card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-layer-group"></i>
+              Step 1: Choose Class Type
+            </h3>
+          </div>
+          <div class="card-body">
+            <div id="booking-course-types" style="display: flex; flex-wrap: wrap; gap: 12px;">
+              <div class="loading"><div class="spinner"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Interactive Calendar -->
+        <div class="glass-card" id="calendar-section" style="display: none;">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-calendar-alt"></i>
+              Step 2: Select Date
+            </h3>
+            <div style="display: flex; gap: 8px;">
+              <button onclick="App.changeBookingMonth(-1)" style="padding: 8px 12px; border: none; background: #f3f4f6; border-radius: 8px; cursor: pointer;">
+                <i class="fas fa-chevron-left"></i>
+              </button>
+              <span id="booking-calendar-month" style="font-weight: 600; padding: 8px;">February 2026</span>
+              <button onclick="App.changeBookingMonth(1)" style="padding: 8px 12px; border: none; background: #f3f4f6; border-radius: 8px; cursor: pointer;">
+                <i class="fas fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="booking-calendar" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;">
+              <!-- Calendar generated by JS -->
+            </div>
+            <div style="display: flex; gap: 16px; margin-top: 16px; font-size: 14px; color: #6b7280;">
+              <span><span style="display: inline-block; width: 16px; height: 16px; background: #10b981; border-radius: 4px; margin-right: 6px; vertical-align: middle;"></span>Available</span>
+              <span><span style="display: inline-block; width: 16px; height: 16px; background: #f59e0b; border-radius: 4px; margin-right: 6px; vertical-align: middle;"></span>Your Booking</span>
+              <span><span style="display: inline-block; width: 16px; height: 16px; background: #e5e7eb; border-radius: 4px; margin-right: 6px; vertical-align: middle;"></span>No Classes</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Available Time Slots -->
+        <div class="glass-card" id="time-slots-section" style="display: none;">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-clock"></i>
+              Step 3: Select Time Slot
+            </h3>
+            <span id="selected-date-display" style="color: #004e92; font-weight: 600;"></span>
+          </div>
+          <div class="card-body">
+            <div id="time-slots-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;">
+              <!-- Time slots generated by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Booking Confirmation -->
+        <div class="glass-card" id="confirmation-section" style="display: none;">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-check-circle"></i>
+              Confirm Booking
+            </h3>
+          </div>
+          <div class="card-body">
+            <div id="booking-summary" style="background: #f0f9ff; padding: 20px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid #004e92;">
+              <!-- Booking details -->
+            </div>
+            <div style="display: flex; gap: 12px;">
+              <button onclick="App.confirmBooking()" class="btn btn-primary" style="flex: 1;">
+                <i class="fas fa-check"></i> Confirm Booking
+              </button>
+              <button onclick="App.resetBooking()" class="btn btn-secondary" style="flex: 1;">
+                <i class="fas fa-redo"></i> Start Over
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subscriptions Screen -->
+      <div id="screen-subscriptions" class="screen">
+        <div class="page-header">
+          <h1 class="page-title">My Subscriptions</h1>
+          <p class="page-subtitle">Your active memberships</p>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-id-card"></i>
+              Active Subscriptions
+            </h3>
+          </div>
+          <div class="card-body">
+            <div id="subscriptions-list">
+              <div class="loading">
+                <div class="spinner"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attendances Screen -->
+      <div id="screen-attendances" class="screen">
+        <div class="page-header">
+          <h1 class="page-title">Attendance History</h1>
+          <p class="page-subtitle">Track your class attendance</p>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-history"></i>
+              Attendance Records
+            </h3>
+          </div>
+          <div class="card-body">
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                  </tr>
+                </thead>
+                <tbody id="attendances-table-body">
+                  <tr>
+                    <td colspan="2" class="loading">
+                      <div class="spinner"></div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Waitlist Screen -->
+      <div id="screen-waitlist" class="screen">
+        <div class="page-header">
+          <h1 class="page-title">Waitlist</h1>
+          <p class="page-subtitle">Classes you're waiting for</p>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-clock"></i>
+              Your Waitlist
+            </h3>
+          </div>
+          <div class="card-body">
+            <div id="waitlist-content">
+              <div class="loading">
+                <div class="spinner"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cancellations Screen -->
+      <div id="screen-cancellations" class="screen">
+        <div class="page-header">
+          <h1 class="page-title">Cancellations</h1>
+          <p class="page-subtitle">Cancelled class history</p>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-times-circle"></i>
+              Cancellation History
+            </h3>
+          </div>
+          <div class="card-body">
+            <div id="cancellations-content">
+              <div class="loading">
+                <div class="spinner"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barcode Screen -->
+      <div id="screen-barcode" class="screen">
+        <div class="page-header">
+          <h1 class="page-title">My Barcode</h1>
+          <p class="page-subtitle">Show this at the entrance</p>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-body" style="text-align: center;">
+            <div id="barcode-display" style="margin-bottom: 20px;">
+              <div class="loading">
+                <div class="spinner"></div>
+              </div>
+            </div>
+            <div style="font-size: 24px; font-weight: 700; letter-spacing: 4px; margin-bottom: 16px;" id="barcode-number">-</div>
+            <p style="color: #6b7280;">
+              <i class="fas fa-info-circle"></i>
+              Present this barcode when entering the facility
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Screen -->
+      <div id="screen-profile" class="screen">
+        <div class="page-header">
+          <h1 class="page-title">My Profile</h1>
+          <p class="page-subtitle">Your account information</p>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-user"></i>
+              Personal Information
+            </h3>
+          </div>
+          <div class="card-body">
+            <table class="data-table">
+              <tr>
+                <td style="width: 40%; color: #6b7280;">Full Name</td>
+                <td style="font-weight: 600;" id="profile-name">-</td>
+              </tr>
+              <tr>
+                <td style="color: #6b7280;">Program Expires</td>
+                <td id="profile-expiry">-</td>
+              </tr>
+              <tr>
+                <td style="color: #6b7280;">Account Balance</td>
+                <td id="profile-balance">-</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
