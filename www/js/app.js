@@ -99,10 +99,27 @@ const translations = {
     bookingStatusPending: 'Εκκρεμεί',
     bookingStatusConfirmed: 'Επιβεβαιωμένο',
     bookingStatusCancelled: 'Ακυρωμένο',
+    bookingStatusActive: 'Ενεργή',
     loading: 'Φόρτωση...',
     language: 'Γλώσσα',
     greek: 'Ελληνικά',
-    english: 'English'
+    english: 'English',
+    dayShort: {
+      'Κυρ': 'Κυρ',
+      'Δευ': 'Δευ',
+      'Τρι': 'Τρι',
+      'Τετ': 'Τετ',
+      'Πεμ': 'Πεμ',
+      'Παρ': 'Παρ',
+      'Σαβ': 'Σαβ',
+      'Sun': 'Sun',
+      'Mon': 'Mon',
+      'Tue': 'Tue',
+      'Wed': 'Wed',
+      'Thu': 'Thu',
+      'Fri': 'Fri',
+      'Sat': 'Sat'
+    }
   },
   en: {
     appTitle: 'Swim College - Online Booking',
@@ -202,10 +219,27 @@ const translations = {
     bookingStatusPending: 'Pending',
     bookingStatusConfirmed: 'Confirmed',
     bookingStatusCancelled: 'Cancelled',
+    bookingStatusActive: 'Active',
     loading: 'Loading...',
     language: 'Language',
     greek: 'Ελληνικά',
-    english: 'English'
+    english: 'English',
+    dayShort: {
+      'Κυρ': 'Sun',
+      'Δευ': 'Mon',
+      'Τρι': 'Tue',
+      'Τετ': 'Wed',
+      'Πεμ': 'Thu',
+      'Παρ': 'Fri',
+      'Σαβ': 'Sat',
+      'Sun': 'Sun',
+      'Mon': 'Mon',
+      'Tue': 'Tue',
+      'Wed': 'Wed',
+      'Thu': 'Thu',
+      'Fri': 'Fri',
+      'Sat': 'Sat'
+    }
   }
 };
 
@@ -216,6 +250,25 @@ const App = {
 
   t(key) {
     return translations[this.currentLanguage][key] || translations['el'][key] || key;
+  },
+
+  translateDay(day) {
+    const dayMap = this.t('dayShort');
+    return dayMap[day] || day;
+  },
+
+  translateStatus(status) {
+    const statusMap = {
+      'confirmed': this.t('bookingStatusConfirmed'),
+      'pending': this.t('bookingStatusPending'),
+      'cancelled': this.t('bookingStatusCancelled'),
+      'active': this.t('bookingStatusActive'),
+      'Ενεργή': this.t('bookingStatusActive'),
+      'Επιβεβαιωμένο': this.t('bookingStatusConfirmed'),
+      'Εκκρεμεί': this.t('bookingStatusPending'),
+      'Ακυρωμένο': this.t('bookingStatusCancelled')
+    };
+    return statusMap[status] || status;
   },
 
   setLanguage(lang) {
@@ -454,11 +507,11 @@ const App = {
               <div class="booking-details">
                 <div class="booking-title">${b.course}</div>
                 <div class="booking-meta">
-                  <i class="fas fa-calendar"></i> ${b.date} &nbsp;
+                  <i class="fas fa-calendar"></i> ${this.translateDay(b.date)} &nbsp;
                   <i class="fas fa-clock"></i> ${b.time}
                 </div>
               </div>
-              <span class="booking-status ${b.status}">${b.statusText}</span>
+              <span class="booking-status ${b.status}">${this.translateStatus(b.statusText)}</span>
             </div>
           `).join('');
         } else {
@@ -523,12 +576,12 @@ const App = {
                 <div class="booking-title">${b.course}</div>
                 <div class="booking-meta">
                   <span>ID: ${b.id}</span> | 
-                  <span><i class="fas fa-calendar"></i> ${b.date}</span> | 
+                  <span><i class="fas fa-calendar"></i> ${this.translateDay(b.date)}</span> | 
                   <span><i class="fas fa-clock"></i> ${b.time}</span>
                 </div>
               </div>
               <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
-                <span class="booking-status ${b.status}">${b.statusText}</span>
+                <span class="booking-status ${b.status}">${this.translateStatus(b.statusText)}</span>
                 ${b.status === 'pending' ? `
                   <button onclick="App.cancelBooking('${b.id}')" 
                           style="padding: 6px 12px; background: #fee2e2; color: #991b1b; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;">
