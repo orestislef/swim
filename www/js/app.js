@@ -1,8 +1,259 @@
 const API_BASE = '/api';
 
+const translations = {
+  el: {
+    appTitle: 'Swim College - Online Booking',
+    onlineBooking: 'Σύστημα Online Κρατήσεων',
+    login: 'Σύνδεση',
+    register: 'Εγγραφή',
+    username: 'Όνομα χρήστη',
+    password: 'Κωδικός',
+    enterUsername: 'Εισάγετε όνομα χρήστη',
+    enterPassword: 'Εισάγετε κωδικό',
+    signIn: 'Σύνδεση',
+    createAccount: 'Δημιουργία λογαριασμού',
+    dashboard: 'Πίνακας Ελέγχου',
+    myBookings: 'Οι Κρατήσεις μου',
+    classes: 'Μαθήματα',
+    subscriptions: 'Συνδρομές',
+    attendance: 'Παρουσίες',
+    waitlist: 'Λίστα Αναμονής',
+    cancellations: 'Ακυρώσεις',
+    myBarcode: 'Το Barcode μου',
+    profile: 'Προφίλ',
+    logout: 'Αποσύνδεση',
+    welcomeBack: 'Καλώς ήρθατε!',
+    overview: 'Εδώ είναι η επισκόπησή σας.',
+    member: 'Μέλος',
+    expires: 'Λήξη',
+    balance: 'Υπόλοιπο',
+    bookings: 'Κρατήσεις',
+    upcomingClasses: 'Επερχόμενα Μαθήματα',
+    allBookings: 'Όλες οι Κρατήσεις',
+    bookClass: 'Κράτηση Μαθήματος',
+    selectDateTime: 'Επιλέξτε ημερομηνία και ώρα για να κλείσετε το μάθημά σας',
+    step1ChooseType: 'Βήμα 1: Επιλέξτε Τύπο Μαθήματος',
+    step2SelectDate: 'Βήμα 2: Επιλέξτε Ημερομηνία',
+    step3SelectTime: 'Βήμα 3: Επιλέξτε Ώρα',
+    step4Confirm: 'Επιβεβαίωση Κράτησης',
+    available: 'Διαθέσιμο',
+    yourBooking: 'Η Κράτησή σας',
+    noClasses: 'Χωρίς Μαθήματα',
+    selectedDate: 'Επιλεγμένη Ημερομηνία',
+    confirmBooking: 'Επιβεβαίωση Κράτησης',
+    startOver: 'Νέα Κράτηση',
+    mySubscriptions: 'Οι Συνδρομές μου',
+    activeMemberships: 'Ενεργές Συνδρομές',
+    attendanceHistory: 'Ιστορικό Παρουσιών',
+    trackAttendance: 'Παρακολουθήστε τις παρουσίες σας',
+    attendanceRecords: 'Αρχεία Παρουσιών',
+    date: 'Ημερομηνία',
+    time: 'Ώρα',
+    waitlistTitle: 'Λίστα Αναμονής',
+    waitlistSubtitle: 'Μαθήματα που περιμένετε',
+    yourWaitlist: 'Η Λίστα Αναμονής σας',
+    cancellationsTitle: 'Ακυρώσεις',
+    cancellationsSubtitle: 'Ιστορικό ακυρωμένων μαθημάτων',
+    cancellationHistory: 'Ιστορικό Ακυρώσεων',
+    showAtEntrance: 'Δείξτε αυτό στην είσοδο',
+    presentBarcode: 'Παρουσιάστε αυτό το barcode κατά την είσοδο',
+    myProfile: 'Το Προφίλ μου',
+    accountInfo: 'Στοιχεία λογαριασμού',
+    fullName: 'Πλήρες Όνομα',
+    programExpires: 'Λήξη Προγράμματος',
+    accountBalance: 'Υπόλοιπο Λογαριασμού',
+    noUpcomingClasses: 'Δεν υπάρχουν επερχόμενα μαθήματα',
+    bookFirstClass: 'Κλείστε το πρώτο σας μάθημα',
+    noBookings: 'Δεν βρέθηκαν κρατήσεις',
+    startBooking: 'Ξεκινήστε κλείνοντας το πρώτο σας μάθημα',
+    cancel: 'Ακύρωση',
+    cancelBookingConfirm: 'Είστε σίγουροι ότι θέλετε να ακυρώσετε αυτή την κράτηση;',
+    bookingCancelled: '✅ Η κράτηση ακυρώθηκε επιτυχώς!',
+    bookingFailed: '❌ Η κράτηση απέτυχε: ',
+    error: 'Σφάλμα: ',
+    signInProgress: 'Σύνδεση...',
+    processing: 'Επεξεργασία...',
+    classType: 'Τύπος Μαθήματος',
+    dateLabel: 'Ημερομηνία',
+    timeLabel: 'Ώρα',
+    bookingInfo: 'Αυτή η κράτηση θα επιβεβαιωθεί μετά την πληρωμή στη ρεσεψιόν.',
+    bookingSuccess: '✅ Η κράτηση ήταν επιτυχής!',
+    bookingSuccessDetails: 'Παρακαλώ πληρώστε στη ρεσεψιόν και δείξτε το barcode σας.',
+    noCourses: 'Δεν υπάρχουν διαθέσιμα μαθήματα',
+    spots: 'θέσεις',
+    full: 'Γεμάτο',
+    noActiveSubscriptions: 'Δεν υπάρχουν ενεργές συνδρομές',
+    contactReception: 'Επικοινωνήστε με τη ρεσεψιόν για αγορά συνδρομής',
+    noAttendance: 'Δεν υπάρχουν αρχεία παρουσιών',
+    noWaitlist: 'Δεν υπάρχουν στοιχεία στη λίστα αναμονής',
+    noWaitlistText: 'Δεν περιμένετε κανένα μάθημα',
+    noCancellations: 'Δεν υπάρχουν ακυρώσεις',
+    noCancellationsText: 'Δεν έχετε ακυρώσει κανένα μάθημα',
+    barcodeNotAvailable: 'Το barcode δεν είναι διαθέσιμο',
+    pleaseEnterBoth: 'Παρακαλώ εισάγετε όνομα χρήστη και κωδικό',
+    invalidCredentials: 'Άκυρα στοιχεία σύνδεσης',
+    connectionError: 'Σφάλμα σύνδεσης. Προσπαθήστε ξανά.',
+    registrationComingSoon: 'Η εγγραφή θα είναι σύντομα διαθέσιμη!',
+    activeMember: 'Ενεργό Μέλος',
+    noData: '-',
+    bookingStatusPending: 'Εκκρεμεί',
+    bookingStatusConfirmed: 'Επιβεβαιωμένο',
+    bookingStatusCancelled: 'Ακυρωμένο',
+    loading: 'Φόρτωση...',
+    language: 'Γλώσσα',
+    greek: 'Ελληνικά',
+    english: 'English'
+  },
+  en: {
+    appTitle: 'Swim College - Online Booking',
+    onlineBooking: 'Online Booking System',
+    login: 'Login',
+    register: 'Register',
+    username: 'Username',
+    password: 'Password',
+    enterUsername: 'Enter username',
+    enterPassword: 'Enter password',
+    signIn: 'Sign In',
+    createAccount: 'Create Account',
+    dashboard: 'Dashboard',
+    myBookings: 'My Bookings',
+    classes: 'Classes',
+    subscriptions: 'Subscriptions',
+    attendance: 'Attendance',
+    waitlist: 'Waitlist',
+    cancellations: 'Cancellations',
+    myBarcode: 'My Barcode',
+    profile: 'Profile',
+    logout: 'Logout',
+    welcomeBack: 'Welcome back!',
+    overview: "Here's your overview.",
+    member: 'Member',
+    expires: 'Expires',
+    balance: 'Balance',
+    bookings: 'Bookings',
+    upcomingClasses: 'Upcoming Classes',
+    allBookings: 'All Bookings',
+    bookClass: 'Book a Class',
+    selectDateTime: 'Select date and time to book your swim',
+    step1ChooseType: 'Step 1: Choose Class Type',
+    step2SelectDate: 'Step 2: Select Date',
+    step3SelectTime: 'Step 3: Select Time Slot',
+    step4Confirm: 'Confirm Booking',
+    available: 'Available',
+    yourBooking: 'Your Booking',
+    noClasses: 'No Classes',
+    selectedDate: 'Selected Date',
+    confirmBooking: 'Confirm Booking',
+    startOver: 'Start Over',
+    mySubscriptions: 'My Subscriptions',
+    activeMemberships: 'Active Subscriptions',
+    attendanceHistory: 'Attendance History',
+    trackAttendance: 'Track your class attendance',
+    attendanceRecords: 'Attendance Records',
+    date: 'Date',
+    time: 'Time',
+    waitlistTitle: 'Waitlist',
+    waitlistSubtitle: "Classes you're waiting for",
+    yourWaitlist: 'Your Waitlist',
+    cancellationsTitle: 'Cancellations',
+    cancellationsSubtitle: 'Cancelled class history',
+    cancellationHistory: 'Cancellation History',
+    showAtEntrance: 'Show this at the entrance',
+    presentBarcode: 'Present this barcode when entering the facility',
+    myProfile: 'My Profile',
+    accountInfo: 'Account Information',
+    fullName: 'Full Name',
+    programExpires: 'Program Expires',
+    accountBalance: 'Account Balance',
+    noUpcomingClasses: 'No upcoming classes',
+    bookFirstClass: 'Book your first class to get started',
+    noBookings: 'No bookings found',
+    startBooking: 'Start by booking your first class',
+    cancel: 'Cancel',
+    cancelBookingConfirm: 'Are you sure you want to cancel this booking?',
+    bookingCancelled: '✅ Booking cancelled successfully!',
+    bookingFailed: '❌ Booking failed: ',
+    error: 'Error: ',
+    signInProgress: 'Signing in...',
+    processing: 'Processing...',
+    classType: 'Class Type',
+    dateLabel: 'Date',
+    timeLabel: 'Time',
+    bookingInfo: 'This booking will be confirmed after payment at reception.',
+    bookingSuccess: '✅ Booking successful!',
+    bookingSuccessDetails: 'Please pay at reception and show your barcode.',
+    noCourses: 'No courses available',
+    spots: 'spots',
+    full: 'Full',
+    noActiveSubscriptions: 'No active subscriptions',
+    contactReception: 'Contact reception to purchase a subscription',
+    noAttendance: 'No attendance records',
+    noWaitlist: 'No items in waitlist',
+    noWaitlistText: "You're not waiting for any classes",
+    noCancellations: 'No cancellations',
+    noCancellationsText: "You haven't cancelled any classes",
+    barcodeNotAvailable: 'Barcode not available',
+    pleaseEnterBoth: 'Please enter both username and password',
+    invalidCredentials: 'Invalid credentials',
+    connectionError: 'Connection error. Please try again.',
+    registrationComingSoon: 'Registration coming soon!',
+    activeMember: 'Active Member',
+    noData: '-',
+    bookingStatusPending: 'Pending',
+    bookingStatusConfirmed: 'Confirmed',
+    bookingStatusCancelled: 'Cancelled',
+    loading: 'Loading...',
+    language: 'Language',
+    greek: 'Ελληνικά',
+    english: 'English'
+  }
+};
+
 const App = {
   currentUser: null,
   isAuthenticated: false,
+  currentLanguage: 'el',
+
+  t(key) {
+    return translations[this.currentLanguage][key] || translations['el'][key] || key;
+  },
+
+  setLanguage(lang) {
+    this.currentLanguage = lang;
+    localStorage.setItem('language', lang);
+    this.updateUILanguage();
+  },
+
+  updateUILanguage() {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+        el.placeholder = this.t(key);
+      } else {
+        el.textContent = this.t(key);
+      }
+    });
+
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+      const key = el.getAttribute('data-i18n-title');
+      el.title = this.t(key);
+    });
+
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      const key = el.getAttribute('data-i18n-html');
+      el.innerHTML = this.t(key);
+    });
+
+    const langBtn = document.getElementById('lang-btn');
+    if (langBtn) {
+      langBtn.innerHTML = `<i class="fas fa-globe"></i> ${this.currentLanguage === 'el' ? 'EL' : 'EN'}`;
+    }
+
+    const langSelect = document.getElementById('lang-select');
+    if (langSelect) {
+      langSelect.value = this.currentLanguage;
+    }
+  },
   
   // Booking state
   bookingState: {
@@ -14,6 +265,17 @@ const App = {
   },
   
   async init() {
+    const savedLang = localStorage.getItem('language');
+    if (savedLang && (savedLang === 'el' || savedLang === 'en')) {
+      this.currentLanguage = savedLang;
+    } else {
+      const browserLang = navigator.language || navigator.userLanguage;
+      if (browserLang.startsWith('en')) {
+        this.currentLanguage = 'en';
+      } else {
+        this.currentLanguage = 'el';
+      }
+    }
     this.bindEvents();
     await this.checkAuth();
   },
@@ -29,6 +291,7 @@ const App = {
         this.isAuthenticated = true;
         document.getElementById('login-page').style.display = 'none';
         document.getElementById('app').classList.add('active');
+        this.updateUILanguage();
         await this.loadDashboardData();
       }
     } catch (error) {
@@ -37,30 +300,32 @@ const App = {
   },
 
   bindEvents() {
-    // Login
     document.getElementById('login-btn').addEventListener('click', () => this.login());
-    document.getElementById('register-btn').addEventListener('click', () => alert('Registration coming soon!'));
+    document.getElementById('register-btn').addEventListener('click', () => alert(this.t('registrationComingSoon')));
     
-    // Logout
     document.getElementById('logout-btn').addEventListener('click', () => this.logout());
     
-    // Navigation
     document.querySelectorAll('.nav-item').forEach(item => {
       item.addEventListener('click', (e) => {
         e.preventDefault();
         const screen = item.dataset.screen;
         this.switchScreen(screen);
         
-        // Update active nav
         document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
         item.classList.add('active');
       });
     });
     
-    // Enter key on login
     document.getElementById('password').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') this.login();
     });
+
+    const langSelect = document.getElementById('lang-select');
+    if (langSelect) {
+      langSelect.addEventListener('change', (e) => {
+        this.setLanguage(e.target.value);
+      });
+    }
   },
 
   async login() {
@@ -71,14 +336,14 @@ const App = {
     const loginBtn = document.getElementById('login-btn');
     
     if (!username || !password) {
-      errorText.textContent = 'Please enter both username and password';
+      errorText.textContent = this.t('pleaseEnterBoth');
       errorMsg.classList.add('show');
       return;
     }
 
     errorMsg.classList.remove('show');
     loginBtn.disabled = true;
-    loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
+    loginBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${this.t('signInProgress')}`;
 
     try {
       const response = await fetch(`${API_BASE}/auth/login`, {
@@ -95,17 +360,18 @@ const App = {
         this.isAuthenticated = true;
         document.getElementById('login-page').style.display = 'none';
         document.getElementById('app').classList.add('active');
+        this.updateUILanguage();
         await this.loadDashboardData();
       } else {
-        errorText.textContent = result.error || 'Invalid credentials';
+        errorText.textContent = result.error || this.t('invalidCredentials');
         errorMsg.classList.add('show');
       }
     } catch (error) {
-      errorText.textContent = 'Connection error. Please try again.';
+      errorText.textContent = this.t('connectionError');
       errorMsg.classList.add('show');
     } finally {
       loginBtn.disabled = false;
-      loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+      loginBtn.innerHTML = `<i class="fas fa-sign-in-alt"></i> ${this.t('signIn')}`;
     }
   },
 
@@ -199,8 +465,8 @@ const App = {
           container.innerHTML = `
             <div class="empty-state">
               <div class="empty-state-icon"><i class="fas fa-calendar-times"></i></div>
-              <div class="empty-state-title">No upcoming classes</div>
-              <div class="empty-state-text">Book your first class to get started</div>
+              <div class="empty-state-title">${this.t('noUpcomingClasses')}</div>
+              <div class="empty-state-text">${this.t('bookFirstClass')}</div>
             </div>
           `;
         }
@@ -266,7 +532,7 @@ const App = {
                 ${b.status === 'pending' ? `
                   <button onclick="App.cancelBooking('${b.id}')" 
                           style="padding: 6px 12px; background: #fee2e2; color: #991b1b; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;">
-                    <i class="fas fa-times"></i> Cancel
+                    <i class="fas fa-times"></i> ${this.t('cancel')}
                   </button>
                 ` : ''}
               </div>
@@ -278,15 +544,15 @@ const App = {
       container.innerHTML = `
         <div class="empty-state">
           <div class="empty-state-icon"><i class="fas fa-calendar-times"></i></div>
-          <div class="empty-state-title">No bookings found</div>
-          <div class="empty-state-text">Start by booking your first class</div>
+          <div class="empty-state-title">${this.t('noBookings')}</div>
+          <div class="empty-state-text">${this.t('startBooking')}</div>
         </div>
       `;
     }
   },
 
   async cancelBooking(bookingId) {
-    if (!confirm('Are you sure you want to cancel this booking?')) {
+    if (!confirm(this.t('cancelBookingConfirm'))) {
       return;
     }
     
@@ -301,20 +567,18 @@ const App = {
       const result = await response.json();
       
       if (result.success) {
-        alert('✅ Booking cancelled successfully!');
-        // Remove the booking from UI
+        alert(this.t('bookingCancelled'));
         const bookingEl = document.getElementById(`booking-${bookingId}`);
         if (bookingEl) {
           bookingEl.style.opacity = '0.5';
-          bookingEl.innerHTML += '<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(239, 68, 68, 0.9); color: white; padding: 8px 16px; border-radius: 8px; font-weight: 600;">CANCELLED</div>';
+          bookingEl.innerHTML += `<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(239, 68, 68, 0.9); color: white; padding: 8px 16px; border-radius: 8px; font-weight: 600;">${this.t('bookingStatusCancelled').toUpperCase()}</div>`;
         }
-        // Reload bookings after a delay
         setTimeout(() => this.loadBookings(), 1000);
       } else {
-        alert('❌ ' + (result.error || 'Failed to cancel booking'));
+        alert(this.t('bookingFailed') + (result.error || ''));
       }
     } catch (error) {
-      alert('❌ Error: ' + error.message);
+      alert(this.t('error') + error.message);
     }
   },
 
@@ -351,7 +615,7 @@ const App = {
         </button>
       `).join('');
     } else {
-      container.innerHTML = '<p style="color: #6b7280;">No courses available</p>';
+      container.innerHTML = `<p style="color: #6b7280;">${this.t('noCourses')}</p>`;
     }
   },
 
@@ -490,8 +754,8 @@ const App = {
             <div style="font-size: 14px; color: #6b7280;">
               <i class="fas fa-user"></i> ${slot.instructor}
               ${isAvailable 
-                ? `<span style="color: #059669; float: right;"><i class="fas fa-check-circle"></i> ${slot.available} spots</span>`
-                : '<span style="color: #ef4444; float: right;"><i class="fas fa-times-circle"></i> Full</span>'
+                ? `<span style="color: #059669; float: right;"><i class="fas fa-check-circle"></i> ${slot.available} ${this.t('spots')}</span>`
+                : '<span style="color: #ef4444; float: right;"><i class="fas fa-times-circle"></i> ' + this.t('full') + '</span>'
               }
             </div>
           </button>
@@ -510,10 +774,10 @@ const App = {
     document.getElementById('confirmation-section').style.display = 'block';
     
     const summaryHtml = `
-      <div style="margin-bottom: 12px;"><strong>Class Type:</strong> <span style="color: #004e92; font-weight: 600;">${this.bookingState.selectedCourse}</span></div>
-      <div style="margin-bottom: 12px;"><strong>Date:</strong> ${this.bookingState.selectedDate.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</div>
-      <div style="margin-bottom: 12px;"><strong>Time:</strong> ${this.bookingState.selectedTime} - ${parseInt(this.bookingState.selectedTime.split(':')[0]) + 1}:00</div>
-      <div style="font-size: 14px; color: #059669;"><i class="fas fa-info-circle"></i> This booking will be confirmed after payment at reception.</div>
+      <div style="margin-bottom: 12px;"><strong>${this.t('classType')}:</strong> <span style="color: #004e92; font-weight: 600;">${this.bookingState.selectedCourse}</span></div>
+      <div style="margin-bottom: 12px;"><strong>${this.t('dateLabel')}:</strong> ${this.bookingState.selectedDate.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</div>
+      <div style="margin-bottom: 12px;"><strong>${this.t('timeLabel')}:</strong> ${this.bookingState.selectedTime} - ${parseInt(this.bookingState.selectedTime.split(':')[0]) + 1}:00</div>
+      <div style="font-size: 14px; color: #059669;"><i class="fas fa-info-circle"></i> ${this.t('bookingInfo')}</div>
     `;
     
     document.getElementById('booking-summary').innerHTML = summaryHtml;
@@ -525,7 +789,7 @@ const App = {
   async confirmBooking() {
     const btn = event.target;
     btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${this.t('processing')}`;
     
     try {
       const response = await fetch(`${API_BASE}/booking/book`, {
@@ -542,24 +806,23 @@ const App = {
       const result = await response.json();
       
       if (result.success) {
-        alert('✅ Booking successful!\n\n' +
-              `Class: ${this.bookingState.selectedCourse}\n` +
-              `Date: ${this.bookingState.selectedDate.toLocaleDateString()}\n` +
-              `Time: ${this.bookingState.selectedTime}\n\n` +
-              'Please pay at reception and show your barcode.');
+        alert(this.t('bookingSuccess') + '\n\n' +
+              `${this.t('classType')}: ${this.bookingState.selectedCourse}\n` +
+              `${this.t('dateLabel')}: ${this.bookingState.selectedDate.toLocaleDateString()}\n` +
+              `${this.t('timeLabel')}: ${this.bookingState.selectedTime}\n\n` +
+              this.t('bookingSuccessDetails'));
         
-        // Reset and go to bookings
         this.resetBooking();
         this.switchScreen('bookings');
         this.loadBookings();
       } else {
-        alert('❌ Booking failed: ' + (result.error || 'Unknown error'));
+        alert(this.t('bookingFailed') + (result.error || 'Unknown error'));
       }
     } catch (error) {
-      alert('❌ Error: ' + error.message);
+      alert(this.t('error') + error.message);
     } finally {
       btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-check"></i> Confirm Booking';
+      btn.innerHTML = `<i class="fas fa-check"></i> ${this.t('confirmBooking')}`;
     }
   },
 
@@ -603,18 +866,18 @@ const App = {
             <div class="booking-meta">
               <span><i class="fas fa-calendar-plus"></i> ${sub.start}</span> | 
               <span><i class="fas fa-calendar-minus"></i> ${sub.end}</span> | 
-              <span><i class="fas fa-check-circle"></i> ${sub.attendances} attended</span>
+              <span><i class="fas fa-check-circle"></i> ${sub.attendances} ${this.t('attendance').toLowerCase()}</span>
             </div>
           </div>
-          <span class="booking-status confirmed">Active</span>
+          <span class="booking-status confirmed">${this.t('bookingStatusConfirmed')}</span>
         </div>
       `).join('');
     } else {
       container.innerHTML = `
         <div class="empty-state">
           <div class="empty-state-icon"><i class="fas fa-id-card"></i></div>
-          <div class="empty-state-title">No active subscriptions</div>
-          <div class="empty-state-text">Contact reception to purchase a subscription</div>
+          <div class="empty-state-title">${this.t('noActiveSubscriptions')}</div>
+          <div class="empty-state-text">${this.t('contactReception')}</div>
         </div>
       `;
     }
@@ -640,7 +903,7 @@ const App = {
           <td colspan="2">
             <div class="empty-state">
               <div class="empty-state-icon"><i class="fas fa-clipboard-list"></i></div>
-              <div class="empty-state-title">No attendance records</div>
+              <div class="empty-state-title">${this.t('noAttendance')}</div>
             </div>
           </td>
         </tr>
@@ -665,8 +928,8 @@ const App = {
       container.innerHTML = `
         <div class="empty-state">
           <div class="empty-state-icon"><i class="fas fa-check-circle" style="color: #059669;"></i></div>
-          <div class="empty-state-title">No items in waitlist</div>
-          <div class="empty-state-text">You're not waiting for any classes</div>
+          <div class="empty-state-title">${this.t('noWaitlist')}</div>
+          <div class="empty-state-text">${this.t('noWaitlistText')}</div>
         </div>
       `;
     }
@@ -689,8 +952,8 @@ const App = {
       container.innerHTML = `
         <div class="empty-state">
           <div class="empty-state-icon"><i class="fas fa-check-circle" style="color: #059669;"></i></div>
-          <div class="empty-state-title">No cancellations</div>
-          <div class="empty-state-text">You haven't cancelled any classes</div>
+          <div class="empty-state-title">${this.t('noCancellations')}</div>
+          <div class="empty-state-text">${this.t('noCancellationsText')}</div>
         </div>
       `;
     }
@@ -711,7 +974,7 @@ const App = {
       if (result.data.svg) {
         display.innerHTML = result.data.svg;
       } else {
-        display.innerHTML = '<p style="color: #6b7280;">Barcode not available</p>';
+        display.innerHTML = `<p style="color: #6b7280;">${this.t('barcodeNotAvailable')}</p>`;
       }
     }
   }
