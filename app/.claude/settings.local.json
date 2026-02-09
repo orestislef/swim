@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(robocopy:*)",
+      "Bash(xcopy:*)",
+      "Bash(cmd /c 'xcopy \"\"C:\\\\Users\\\\billy\\\\Desktop\\\\swim_college_app\"\" \"\"C:\\\\Users\\\\billy\\\\Documents\\\\swim\\\\\"\" /E /I /H /Y /Q')",
+      "Bash(cmd /c 'xcopy \"\"C:\\\\Users\\\\billy\\\\Desktop\\\\swim_college_app\"\" \"\"C:\\\\Users\\\\billy\\\\Documents\\\\swim\\\\app\\\\\"\" /E /I /H /Y')",
+      "Bash(powershell -Command:*)"
+    ]
+  }
+}
