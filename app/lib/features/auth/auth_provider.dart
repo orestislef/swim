@@ -34,14 +34,13 @@ class AuthState {
   }
 }
 
-class AuthNotifier extends StateNotifier<AuthState> {
-  final AuthRepository _authRepo;
-  final ApiClient _apiClient;
-
-  AuthNotifier(this._authRepo, this._apiClient)
-      : super(const AuthState()) {
-    _apiClient.onUnauthorized = _handleUnauthorized;
+class AuthNotifier extends Notifier<AuthState> {
+  @override
+  AuthState build() {
+    final apiClient = ref.read(apiClientProvider);
+    apiClient.onUnauthorized = _handleUnauthorized;
     checkAuth();
+    return const AuthState();
   }
 
   void _handleUnauthorized() {
@@ -49,7 +48,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> checkAuth() async {
-    final isAuth = await _authRepo.checkAuthStatus();
+    final authRepo = ref.read(authRepositoryProvider);
+    final isAuth = await authRepo.checkAuthStatus();
     state = AuthState(
       status: isAuth ? AuthStatus.authenticated : AuthStatus.unauthenticated,
     );
@@ -57,7 +57,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> login(String username, String password) async {
     state = state.copyWith(isLoading: true, error: null);
-    final result = await _authRepo.login(username, password);
+    final authRepo = ref.read(authRepositoryProvider);
+    final result = await authRepo.login(username, password);
     if (result.success) {
       state = AuthState(
         status: AuthStatus.authenticated,
@@ -73,7 +74,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> logout() async {
-    await _authRepo.logout();
+    final authRepo = ref.read(authRepositoryProvider);
+    await authRepo.logout();
     await NotificationService().cancelAll();
     state = const AuthState(status: AuthStatus.unauthenticated);
   }
@@ -86,9 +88,6 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
   return AuthRepository(ref.watch(apiClientProvider));
 });
 
-final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
-  return AuthNotifier(
-    ref.watch(authRepositoryProvider),
-    ref.watch(apiClientProvider),
-  );
-});
+final authProvider = NotifierProvider<AuthNotifier, AuthState>(
+  AuthNotifier.new,
+);

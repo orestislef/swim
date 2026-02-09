@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/models/booking.dart';
-import '../../data/repositories/data_repository.dart';
 import '../../services/notification_service.dart';
 import '../dashboard/dashboard_provider.dart';
 import '../settings/settings_provider.dart';
@@ -29,20 +28,25 @@ class BookingsState {
   }
 }
 
-class BookingsNotifier extends StateNotifier<BookingsState> {
-  final DataRepository _dataRepo;
-  final bool _notificationsEnabled;
-
-  BookingsNotifier(this._dataRepo, this._notificationsEnabled)
-      : super(const BookingsState());
+class BookingsNotifier extends Notifier<BookingsState> {
+  @override
+  BookingsState build() {
+    return const BookingsState();
+  }
 
   Future<void> load() async {
     state = state.copyWith(isLoading: true, error: null);
     try {
-      final bookings = await _dataRepo.getBookings();
+      final dataRepo = ref.read(dataRepositoryProvider);
+      final bookings = await dataRepo.getBookings();
       state = BookingsState(bookings: bookings);
-      if (_notificationsEnabled) {
-        NotificationService().scheduleBookingReminders(bookings);
+      final settings = ref.read(settingsProvider);
+      if (settings.notificationsEnabled) {
+        NotificationService().scheduleBookingReminders(
+          bookings,
+          notify24h: settings.notify24hBefore,
+          notify1h: settings.notify1hBefore,
+        );
       }
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
@@ -50,7 +54,8 @@ class BookingsNotifier extends StateNotifier<BookingsState> {
   }
 
   Future<bool> cancelBooking(String bookingId) async {
-    final result = await _dataRepo.cancelBooking(bookingId);
+    final dataRepo = ref.read(dataRepositoryProvider);
+    final result = await dataRepo.cancelBooking(bookingId);
     if (result.success) {
       await load();
       return true;
@@ -60,9 +65,6 @@ class BookingsNotifier extends StateNotifier<BookingsState> {
 }
 
 final bookingsProvider =
-    StateNotifierProvider<BookingsNotifier, BookingsState>((ref) {
-  final notifEnabled = ref.watch(
-    settingsProvider.select((s) => s.notificationsEnabled),
-  );
-  return BookingsNotifier(ref.watch(dataRepositoryProvider), notifEnabled);
-});
+    NotifierProvider<BookingsNotifier, BookingsState>(
+  BookingsNotifier.new,
+);

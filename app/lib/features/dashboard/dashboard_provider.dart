@@ -34,19 +34,19 @@ class DashboardState {
   }
 }
 
-class DashboardNotifier extends StateNotifier<DashboardState> {
-  final DataRepository _dataRepo;
-  final bool _notificationsEnabled;
-
-  DashboardNotifier(this._dataRepo, this._notificationsEnabled)
-      : super(const DashboardState());
+class DashboardNotifier extends Notifier<DashboardState> {
+  @override
+  DashboardState build() {
+    return const DashboardState();
+  }
 
   Future<void> load() async {
     state = state.copyWith(isLoading: true, error: null);
     try {
+      final dataRepo = ref.read(dataRepositoryProvider);
       final results = await Future.wait([
-        _dataRepo.getDashboard(),
-        _dataRepo.getBookings(),
+        dataRepo.getDashboard(),
+        dataRepo.getBookings(),
       ]);
       final user = results[0] as User?;
       final bookings = results[1] as List<Booking>;
@@ -54,8 +54,13 @@ class DashboardNotifier extends StateNotifier<DashboardState> {
       state = DashboardState(user: user, bookings: bookings);
 
       // Schedule notifications if enabled
-      if (_notificationsEnabled) {
-        NotificationService().scheduleBookingReminders(bookings);
+      final settings = ref.read(settingsProvider);
+      if (settings.notificationsEnabled) {
+        NotificationService().scheduleBookingReminders(
+          bookings,
+          notify24h: settings.notify24hBefore,
+          notify1h: settings.notify1hBefore,
+        );
       }
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
@@ -68,9 +73,6 @@ final dataRepositoryProvider = Provider<DataRepository>((ref) {
 });
 
 final dashboardProvider =
-    StateNotifierProvider<DashboardNotifier, DashboardState>((ref) {
-  final notifEnabled = ref.watch(
-    settingsProvider.select((s) => s.notificationsEnabled),
-  );
-  return DashboardNotifier(ref.watch(dataRepositoryProvider), notifEnabled);
-});
+    NotifierProvider<DashboardNotifier, DashboardState>(
+  DashboardNotifier.new,
+);

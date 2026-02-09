@@ -54,10 +54,13 @@ class BookClassState {
   }
 }
 
-class BookClassNotifier extends StateNotifier<BookClassState> {
-  final DataRepository _dataRepo;
+class BookClassNotifier extends Notifier<BookClassState> {
+  @override
+  BookClassState build() {
+    return const BookClassState();
+  }
 
-  BookClassNotifier(this._dataRepo) : super(const BookClassState());
+  DataRepository get _dataRepo => ref.read(dataRepositoryProvider);
 
   Future<void> loadCourses() async {
     state = state.copyWith(isLoading: true);
@@ -124,6 +127,6 @@ class BookClassNotifier extends StateNotifier<BookClassState> {
 }
 
 final bookClassProvider =
-    StateNotifierProvider<BookClassNotifier, BookClassState>((ref) {
-  return BookClassNotifier(ref.watch(dataRepositoryProvider));
-});
+    NotifierProvider<BookClassNotifier, BookClassState>(
+  BookClassNotifier.new,
+);

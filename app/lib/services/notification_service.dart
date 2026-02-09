@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -27,7 +28,7 @@ class NotificationService {
     );
 
     await _plugin.initialize(
-      const InitializationSettings(
+      settings: const InitializationSettings(
         android: androidSettings,
         iOS: iosSettings,
       ),
@@ -40,10 +41,20 @@ class NotificationService {
         ?.requestNotificationsPermission();
 
     _initialized = true;
+    debugPrint('[Notifications] initialized');
   }
 
-  Future<void> scheduleBookingReminders(List<Booking> bookings) async {
-    if (!_initialized) return;
+  Future<void> scheduleBookingReminders(
+    List<Booking> bookings, {
+    bool notify24h = true,
+    bool notify1h = true,
+  }) async {
+    if (!_initialized) {
+      debugPrint('[Notifications] NOT initialized, skipping schedule');
+      return;
+    }
+
+    debugPrint('[Notifications] scheduling reminders for ${bookings.length} bookings (24h=$notify24h, 1h=$notify1h)');
 
     // Cancel all existing notifications first
     await _plugin.cancelAll();
@@ -58,25 +69,29 @@ class NotificationService {
       if (classTime == null || classTime.isBefore(now)) continue;
 
       // 24h before
-      final time24h = classTime.subtract(const Duration(hours: 24));
-      if (time24h.isAfter(now)) {
-        await _scheduleNotification(
-          id: notificationId++,
-          title: 'Swim College',
-          body: 'Tomorrow: ${booking.course} at ${booking.time.split(' ').first}',
-          scheduledTime: time24h,
-        );
+      if (notify24h) {
+        final time24h = classTime.subtract(const Duration(hours: 24));
+        if (time24h.isAfter(now)) {
+          await _scheduleNotification(
+            id: notificationId++,
+            title: 'Swim College',
+            body: 'Tomorrow: ${booking.course} at ${booking.time.split(' ').first}',
+            scheduledTime: time24h,
+          );
+        }
       }
 
       // 1h before
-      final time1h = classTime.subtract(const Duration(hours: 1));
-      if (time1h.isAfter(now)) {
-        await _scheduleNotification(
-          id: notificationId++,
-          title: 'Swim College',
-          body: 'Starting soon! ${booking.course} in 1 hour',
-          scheduledTime: time1h,
-        );
+      if (notify1h) {
+        final time1h = classTime.subtract(const Duration(hours: 1));
+        if (time1h.isAfter(now)) {
+          await _scheduleNotification(
+            id: notificationId++,
+            title: 'Swim College',
+            body: 'Starting soon! ${booking.course} in 1 hour',
+            scheduledTime: time1h,
+          );
+        }
       }
     }
   }
@@ -88,13 +103,14 @@ class NotificationService {
     required DateTime scheduledTime,
   }) async {
     final tzTime = tz.TZDateTime.from(scheduledTime, tz.local);
+    debugPrint('[Notifications] scheduling #$id "$body" at $tzTime');
 
     await _plugin.zonedSchedule(
-      id,
-      title,
-      body,
-      tzTime,
-      const NotificationDetails(
+      id: id,
+      title: title,
+      body: body,
+      scheduledDate: tzTime,
+      notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
           'swim_college_reminders',
           'Class Reminders',
@@ -110,8 +126,6 @@ class NotificationService {
         ),
       ),
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
 

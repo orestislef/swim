@@ -6,29 +6,39 @@ class SettingsState {
   final ThemeMode themeMode;
   final Locale locale;
   final bool notificationsEnabled;
+  final bool notify1hBefore;
+  final bool notify24hBefore;
 
   const SettingsState({
     this.themeMode = ThemeMode.system,
     this.locale = const Locale('el'),
     this.notificationsEnabled = true,
+    this.notify1hBefore = true,
+    this.notify24hBefore = true,
   });
 
   SettingsState copyWith({
     ThemeMode? themeMode,
     Locale? locale,
     bool? notificationsEnabled,
+    bool? notify1hBefore,
+    bool? notify24hBefore,
   }) {
     return SettingsState(
       themeMode: themeMode ?? this.themeMode,
       locale: locale ?? this.locale,
       notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
+      notify1hBefore: notify1hBefore ?? this.notify1hBefore,
+      notify24hBefore: notify24hBefore ?? this.notify24hBefore,
     );
   }
 }
 
-class SettingsNotifier extends StateNotifier<SettingsState> {
-  SettingsNotifier() : super(const SettingsState()) {
+class SettingsNotifier extends Notifier<SettingsState> {
+  @override
+  SettingsState build() {
     _load();
+    return const SettingsState();
   }
 
   Future<void> _load() async {
@@ -36,6 +46,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     final themeName = prefs.getString('themeMode') ?? 'system';
     final langCode = prefs.getString('locale') ?? 'el';
     final notifEnabled = prefs.getBool('notificationsEnabled') ?? true;
+    final notify1h = prefs.getBool('notify1hBefore') ?? true;
+    final notify24h = prefs.getBool('notify24hBefore') ?? true;
 
     state = SettingsState(
       themeMode: switch (themeName) {
@@ -45,6 +57,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       },
       locale: Locale(langCode),
       notificationsEnabled: notifEnabled,
+      notify1hBefore: notify1h,
+      notify24hBefore: notify24h,
     );
   }
 
@@ -83,9 +97,21 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('notificationsEnabled', enabled);
   }
+
+  Future<void> setNotify1hBefore(bool enabled) async {
+    state = state.copyWith(notify1hBefore: enabled);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('notify1hBefore', enabled);
+  }
+
+  Future<void> setNotify24hBefore(bool enabled) async {
+    state = state.copyWith(notify24hBefore: enabled);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('notify24hBefore', enabled);
+  }
 }
 
 final settingsProvider =
-    StateNotifierProvider<SettingsNotifier, SettingsState>(
-  (ref) => SettingsNotifier(),
+    NotifierProvider<SettingsNotifier, SettingsState>(
+  SettingsNotifier.new,
 );

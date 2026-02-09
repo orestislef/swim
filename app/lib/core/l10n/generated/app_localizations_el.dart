@@ -351,6 +351,18 @@ class AppLocalizationsEl extends AppLocalizations {
   String get darkMode => 'Σκοτεινή Λειτουργία';
 
   @override
+  String get theming => 'Θέμα';
+
+  @override
+  String get themeSystem => 'Σύστημα';
+
+  @override
+  String get themeLight => 'Φωτεινό';
+
+  @override
+  String get themeDark => 'Σκοτεινό';
+
+  @override
   String get notifications => 'Ειδοποιήσεις';
 
   @override

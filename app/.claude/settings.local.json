@@ -6,7 +6,10 @@
       "Bash(cmd /c 'xcopy \"\"C:\\\\Users\\\\billy\\\\Desktop\\\\swim_college_app\"\" \"\"C:\\\\Users\\\\billy\\\\Documents\\\\swim\\\\\"\" /E /I /H /Y /Q')",
       "Bash(cmd /c 'xcopy \"\"C:\\\\Users\\\\billy\\\\Desktop\\\\swim_college_app\"\" \"\"C:\\\\Users\\\\billy\\\\Documents\\\\swim\\\\app\\\\\"\" /E /I /H /Y')",
       "Bash(powershell -Command:*)",
-      "Bash(open:*)"
+      "Bash(open:*)",
+      "Bash(flutter gen-l10n:*)",
+      "Bash(flutter build:*)",
+      "Bash(flutter analyze:*)"
     ]
   }
 }

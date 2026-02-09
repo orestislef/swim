@@ -99,7 +99,7 @@ class SwimScaffold extends ConsumerWidget {
     final theme = Theme.of(context);
     final currentIdx = _currentIndex(context);
 
-    final isOnline = ref.watch(connectivityProvider).valueOrNull ?? true;
+    final isOnline = ref.watch(connectivityProvider).value ?? true;
 
     return Scaffold(
       body: Column(
