@@ -3,6 +3,7 @@
   <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Swim College - Online booking system for swimming classes. Book classes, manage subscriptions, track attendance.">
   <title data-i18n="appTitle">Swim College - Online Booking</title>
   <link rel="icon" type="image/png" href="images/logo.png">
   <link rel="stylesheet" href="css/styles.css">
@@ -10,26 +11,34 @@
 </head>
 <body>
 
-  <div class="language-switcher" style="position: fixed; top: 20px; right: 20px; z-index: 1000;">
-    <select id="lang-select" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #e5e7eb; background: white; font-size: 14px; cursor: pointer;">
-      <option value="el">🇬🇷 EL</option>
-      <option value="en">🇺🇸 EN</option>
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Mobile Menu Button -->
+  <button class="mobile-menu-btn" id="mobile-menu-btn">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <div class="language-switcher">
+    <select id="lang-select">
+      <option value="el">GR</option>
+      <option value="en">EN</option>
     </select>
   </div>
 
   <!-- Animated Background -->
   <div class="bg-container">
-    <!-- Moving Gradient -->
     <div class="bg-gradient"></div>
-    
-    <!-- Animated Waves -->
     <div class="waves">
       <div class="wave"></div>
       <div class="wave"></div>
       <div class="wave"></div>
     </div>
-    
-    <!-- Floating Bubbles -->
     <div class="bubbles">
       <div class="bubble"></div>
       <div class="bubble"></div>
@@ -39,8 +48,6 @@
       <div class="bubble"></div>
       <div class="bubble"></div>
     </div>
-    
-    <!-- Light Rays -->
     <div class="rays">
       <div class="ray" style="--rotation: -30deg;"></div>
       <div class="ray" style="--rotation: -15deg;"></div>
@@ -60,28 +67,28 @@
         <h1>Swim College</h1>
         <p data-i18n="onlineBooking">Online Booking System</p>
       </div>
-      
+
       <div class="login-body">
         <div id="login-error" class="alert">
           <i class="fas fa-exclamation-circle"></i>
           <span id="error-text"></span>
         </div>
-        
+
         <div class="input-group">
           <label class="input-label" data-i18n="username">Username</label>
           <input type="text" id="username" class="input-field" data-i18n-placeholder="enterUsername" placeholder="Enter username">
         </div>
-        
+
         <div class="input-group">
           <label class="input-label" data-i18n="password">Password</label>
           <input type="password" id="password" class="input-field" data-i18n-placeholder="enterPassword" placeholder="Enter password">
         </div>
-        
+
         <button type="button" id="login-btn" class="btn btn-primary">
           <i class="fas fa-sign-in-alt"></i>
           <span data-i18n="signIn">Sign In</span>
         </button>
-        
+
         <button type="button" id="register-btn" class="btn btn-secondary">
           <i class="fas fa-user-plus"></i>
           <span data-i18n="createAccount">Create Account</span>
@@ -90,72 +97,71 @@
     </div>
   </div>
 
+  <!-- Sidebar Navigation (outside .app to avoid stacking context issues) -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">
+        <img src="images/logo.png" alt="Logo">
+        <span>Swim College</span>
+      </div>
+      <div class="user-info">
+        <h3 id="user-name">Loading...</h3>
+        <p data-i18n="activeMember">Active Member</p>
+      </div>
+    </div>
+
+    <nav class="nav-menu">
+      <a class="nav-item active" data-screen="home">
+        <i class="fas fa-home"></i>
+        <span data-i18n="dashboard">Dashboard</span>
+      </a>
+      <a class="nav-item" data-screen="bookings">
+        <i class="fas fa-calendar-check"></i>
+        <span data-i18n="myBookings">My Bookings</span>
+      </a>
+      <a class="nav-item" data-screen="courses">
+        <i class="fas fa-graduation-cap"></i>
+        <span data-i18n="classes">Classes</span>
+      </a>
+      <a class="nav-item" data-screen="subscriptions">
+        <i class="fas fa-id-card"></i>
+        <span data-i18n="subscriptions">Subscriptions</span>
+      </a>
+      <a class="nav-item" data-screen="attendances">
+        <i class="fas fa-check-circle"></i>
+        <span data-i18n="attendance">Attendance</span>
+      </a>
+      <a class="nav-item" data-screen="waitlist">
+        <i class="fas fa-clock"></i>
+        <span data-i18n="waitlist">Waitlist</span>
+      </a>
+      <a class="nav-item" data-screen="cancellations">
+        <i class="fas fa-times-circle"></i>
+        <span data-i18n="cancellations">Cancellations</span>
+      </a>
+      <a class="nav-item" data-screen="barcode">
+        <i class="fas fa-barcode"></i>
+        <span data-i18n="myBarcode">My Barcode</span>
+      </a>
+      <a class="nav-item" data-screen="profile">
+        <i class="fas fa-user-circle"></i>
+        <span data-i18n="profile">Profile</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button id="logout-btn" class="btn-logout">
+        <i class="fas fa-sign-out-alt"></i>
+        <span data-i18n="logout">Logout</span>
+      </button>
+    </div>
+  </aside>
+
   <!-- Main App -->
   <div id="app" class="app">
-    
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="sidebar-brand">
-          <img src="images/logo.png" alt="Logo">
-          <span>Swim College</span>
-        </div>
-        <div class="user-info">
-          <h3 id="user-name">Loading...</h3>
-          <p>Active Member</p>
-        </div>
-      </div>
-      
-      <nav class="nav-menu">
-        <a class="nav-item active" data-screen="home">
-          <i class="fas fa-home"></i>
-          <span data-i18n="dashboard">Dashboard</span>
-        </a>
-        <a class="nav-item" data-screen="bookings">
-          <i class="fas fa-calendar-check"></i>
-          <span data-i18n="myBookings">My Bookings</span>
-        </a>
-        <a class="nav-item" data-screen="courses">
-          <i class="fas fa-graduation-cap"></i>
-          <span data-i18n="classes">Classes</span>
-        </a>
-        <a class="nav-item" data-screen="subscriptions">
-          <i class="fas fa-id-card"></i>
-          <span data-i18n="subscriptions">Subscriptions</span>
-        </a>
-        <a class="nav-item" data-screen="attendances">
-          <i class="fas fa-check-circle"></i>
-          <span data-i18n="attendance">Attendance</span>
-        </a>
-        <a class="nav-item" data-screen="waitlist">
-          <i class="fas fa-clock"></i>
-          <span data-i18n="waitlist">Waitlist</span>
-        </a>
-        <a class="nav-item" data-screen="cancellations">
-          <i class="fas fa-times-circle"></i>
-          <span data-i18n="cancellations">Cancellations</span>
-        </a>
-        <a class="nav-item" data-screen="barcode">
-          <i class="fas fa-barcode"></i>
-          <span data-i18n="myBarcode">My Barcode</span>
-        </a>
-        <a class="nav-item" data-screen="profile">
-          <i class="fas fa-user-circle"></i>
-          <span data-i18n="profile">Profile</span>
-        </a>
-      </nav>
-      
-      <div class="sidebar-footer">
-        <button id="logout-btn" class="btn-logout">
-          <i class="fas fa-sign-out-alt"></i>
-          <span data-i18n="logout">Logout</span>
-        </button>
-      </div>
-    </aside>
-
     <!-- Main Content Area -->
     <main class="main-content">
-      
+
       <!-- Dashboard / Home Screen -->
       <div id="screen-home" class="screen active">
         <div class="page-header">
@@ -163,7 +169,6 @@
           <p class="page-subtitle" data-i18n="welcomeBack">Welcome back!</p>
         </div>
 
-        <!-- Stats -->
         <div class="stats-grid">
           <div class="stat-card">
             <div class="stat-icon ocean">
@@ -195,7 +200,6 @@
           </div>
         </div>
 
-        <!-- Upcoming Classes -->
         <div class="glass-card">
           <div class="card-header">
             <h3 class="card-title">
@@ -205,9 +209,7 @@
           </div>
           <div class="card-body">
             <div id="upcoming-list">
-              <div class="loading">
-                <div class="spinner"></div>
-              </div>
+              <div class="loading"><div class="spinner"></div></div>
             </div>
           </div>
         </div>
@@ -219,7 +221,6 @@
           <h1 class="page-title" data-i18n="myBookings">My Bookings</h1>
           <p class="page-subtitle" data-i18n="allBookings">All your class reservations</p>
         </div>
-
         <div class="glass-card">
           <div class="card-header">
             <h3 class="card-title">
@@ -229,9 +230,7 @@
           </div>
           <div class="card-body">
             <div id="bookings-list">
-              <div class="loading">
-                <div class="spinner"></div>
-              </div>
+              <div class="loading"><div class="spinner"></div></div>
             </div>
           </div>
         </div>
@@ -243,8 +242,6 @@
           <h1 class="page-title" data-i18n="bookClass">Book a Class</h1>
           <p class="page-subtitle" data-i18n="selectDateTime">Select date and time to book your swim</p>
         </div>
-
-        <!-- Step 1: Select Class Type -->
         <div class="glass-card">
           <div class="card-header">
             <h3 class="card-title">
@@ -258,8 +255,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Step 2: Interactive Calendar -->
         <div class="glass-card" id="calendar-section" style="display: none;">
           <div class="card-header">
             <h3 class="card-title">
@@ -277,9 +272,7 @@
             </div>
           </div>
           <div class="card-body">
-            <div id="booking-calendar" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;">
-              <!-- Calendar generated by JS -->
-            </div>
+            <div id="booking-calendar" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;"></div>
             <div style="display: flex; gap: 16px; margin-top: 16px; font-size: 14px; color: #6b7280;">
               <span><span style="display: inline-block; width: 16px; height: 16px; background: #10b981; border-radius: 4px; margin-right: 6px; vertical-align: middle;"></span><span data-i18n="available">Available</span></span>
               <span><span style="display: inline-block; width: 16px; height: 16px; background: #f59e0b; border-radius: 4px; margin-right: 6px; vertical-align: middle;"></span><span data-i18n="yourBooking">Your Booking</span></span>
@@ -287,8 +280,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Step 3: Available Time Slots -->
         <div class="glass-card" id="time-slots-section" style="display: none;">
           <div class="card-header">
             <h3 class="card-title">
@@ -298,13 +289,9 @@
             <span id="selected-date-display" style="color: #004e92; font-weight: 600;"></span>
           </div>
           <div class="card-body">
-            <div id="time-slots-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;">
-              <!-- Time slots generated by JS -->
-            </div>
+            <div id="time-slots-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;"></div>
           </div>
         </div>
-
-        <!-- Step 4: Booking Confirmation -->
         <div class="glass-card" id="confirmation-section" style="display: none;">
           <div class="card-header">
             <h3 class="card-title">
@@ -313,14 +300,12 @@
             </h3>
           </div>
           <div class="card-body">
-            <div id="booking-summary" style="background: #f0f9ff; padding: 20px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid #004e92;">
-              <!-- Booking details -->
-            </div>
+            <div id="booking-summary" style="background: #f0f9ff; padding: 20px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid #004e92;"></div>
             <div style="display: flex; gap: 12px;">
-              <button onclick="App.confirmBooking()" class="btn btn-primary" style="flex: 1;">
+              <button onclick="App.confirmBooking(event)" class="btn btn-primary" style="flex: 1;">
                 <i class="fas fa-check"></i> <span data-i18n="confirmBooking">Confirm Booking</span>
               </button>
-              <button onclick="App.resetBooking()" class="btn btn-secondary" style="flex: 1;">
+              <button onclick="App.resetBooking()" class="btn btn-secondary" style="flex: 1; margin-top: 0;">
                 <i class="fas fa-redo"></i> <span data-i18n="startOver">Start Over</span>
               </button>
             </div>
@@ -334,7 +319,6 @@
           <h1 class="page-title" data-i18n="mySubscriptions">My Subscriptions</h1>
           <p class="page-subtitle" data-i18n="activeMemberships">Your active memberships</p>
         </div>
-
         <div class="glass-card">
           <div class="card-header">
             <h3 class="card-title">
@@ -344,9 +328,7 @@
           </div>
           <div class="card-body">
             <div id="subscriptions-list">
-              <div class="loading">
-                <div class="spinner"></div>
-              </div>
+              <div class="loading"><div class="spinner"></div></div>
             </div>
           </div>
         </div>
@@ -358,7 +340,6 @@
           <h1 class="page-title" data-i18n="attendanceHistory">Attendance History</h1>
           <p class="page-subtitle" data-i18n="trackAttendance">Track your class attendance</p>
         </div>
-
         <div class="glass-card">
           <div class="card-header">
             <h3 class="card-title">
@@ -376,11 +357,7 @@
                   </tr>
                 </thead>
                 <tbody id="attendances-table-body">
-                  <tr>
-                    <td colspan="2" class="loading">
-                      <div class="spinner"></div>
-                    </td>
-                  </tr>
+                  <tr><td colspan="2" class="loading"><div class="spinner"></div></td></tr>
                 </tbody>
               </table>
             </div>
@@ -394,7 +371,6 @@
           <h1 class="page-title" data-i18n="waitlistTitle">Waitlist</h1>
           <p class="page-subtitle" data-i18n="waitlistSubtitle">Classes you're waiting for</p>
         </div>
-
         <div class="glass-card">
           <div class="card-header">
             <h3 class="card-title">
@@ -404,9 +380,7 @@
           </div>
           <div class="card-body">
             <div id="waitlist-content">
-              <div class="loading">
-                <div class="spinner"></div>
-              </div>
+              <div class="loading"><div class="spinner"></div></div>
             </div>
           </div>
         </div>
@@ -418,7 +392,6 @@
           <h1 class="page-title" data-i18n="cancellationsTitle">Cancellations</h1>
           <p class="page-subtitle" data-i18n="cancellationsSubtitle">Cancelled class history</p>
         </div>
-
         <div class="glass-card">
           <div class="card-header">
             <h3 class="card-title">
@@ -428,9 +401,7 @@
           </div>
           <div class="card-body">
             <div id="cancellations-content">
-              <div class="loading">
-                <div class="spinner"></div>
-              </div>
+              <div class="loading"><div class="spinner"></div></div>
             </div>
           </div>
         </div>
@@ -442,13 +413,10 @@
           <h1 class="page-title" data-i18n="myBarcode">My Barcode</h1>
           <p class="page-subtitle" data-i18n="showAtEntrance">Show this at the entrance</p>
         </div>
-
         <div class="glass-card">
           <div class="card-body" style="text-align: center;">
             <div id="barcode-display" style="margin-bottom: 20px;">
-              <div class="loading">
-                <div class="spinner"></div>
-              </div>
+              <div class="loading"><div class="spinner"></div></div>
             </div>
             <div style="font-size: 24px; font-weight: 700; letter-spacing: 4px; margin-bottom: 16px;" id="barcode-number">-</div>
             <p style="color: #6b7280;">
@@ -465,7 +433,6 @@
           <h1 class="page-title" data-i18n="myProfile">My Profile</h1>
           <p class="page-subtitle" data-i18n="accountInfo">Your account information</p>
         </div>
-
         <div class="glass-card">
           <div class="card-header">
             <h3 class="card-title">

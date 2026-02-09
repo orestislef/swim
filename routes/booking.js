@@ -40,14 +40,14 @@ router.get('/slots', async (req, res) => {
 // Book a class
 router.post('/book', async (req, res) => {
   try {
-    const { date, time, courseType } = req.body;
+    const { date, courseType, slotId } = req.body;
     const cookies = req.cookies?.cookies ? JSON.parse(req.cookies.cookies) : null;
-    
-    if (!date || !time) {
-      return res.status(400).json({ success: false, error: 'Date and time are required' });
+
+    if (!date || !slotId) {
+      return res.status(400).json({ success: false, error: 'Date and slot ID are required' });
     }
-    
-    const result = await bookingService.bookClass(date, time, courseType || 'BABY', cookies);
+
+    const result = await bookingService.bookClass(date, courseType || 'BABY', slotId, cookies);
     res.json(result);
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
