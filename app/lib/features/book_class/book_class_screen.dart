@@ -69,7 +69,7 @@ class _BookClassScreenState extends ConsumerState<BookClassScreen> {
           ),
           const SizedBox(height: 12),
           if (state.courseTypes.isEmpty && state.isLoading)
-            const LoadingWidget()
+            const ShimmerBookClass()
           else
             Wrap(
               spacing: 8,
@@ -122,7 +122,7 @@ class _BookClassScreenState extends ConsumerState<BookClassScreen> {
             ),
             const SizedBox(height: 12),
             if (state.isLoading && state.slots.isEmpty)
-              const LoadingWidget()
+              const ShimmerBookClass()
             else if (state.slots.isEmpty)
               Card(
                 child: Padding(

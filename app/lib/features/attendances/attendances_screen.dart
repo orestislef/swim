@@ -25,7 +25,7 @@ class AttendancesScreen extends ConsumerWidget {
       body: RefreshIndicator(
         onRefresh: () => ref.refresh(attendancesProvider.future),
         child: asyncData.when(
-          loading: () => const ShimmerList(),
+          loading: () => const ShimmerTable(),
           error: (e, _) => ListView(children: [
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.6,

@@ -31,13 +31,17 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
         title: Text(l10n.cancel),
         content: Text(l10n.cancelBookingConfirm),
         actions: [
-          TextButton(
+          OutlinedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Theme.of(ctx).colorScheme.error,
+              side: BorderSide(color: Theme.of(ctx).colorScheme.error),
+            ),
+            child: Text(l10n.yes),
+          ),
+          OutlinedButton(
             onPressed: () => Navigator.pop(ctx, false),
             child: Text(l10n.no),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(l10n.yes),
           ),
         ],
       ),
@@ -72,7 +76,7 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
                 onRetry: () => ref.read(bookingsProvider.notifier).load(),
               )
             : state.isLoading && state.bookings.isEmpty
-            ? const ShimmerList()
+            ? const ShimmerBookingList()
             : state.bookings.isEmpty
                 ? ListView(
                     children: [

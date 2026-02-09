@@ -25,7 +25,7 @@ class CancellationsScreen extends ConsumerWidget {
       body: RefreshIndicator(
         onRefresh: () => ref.refresh(cancellationsDataProvider.future),
         child: asyncData.when(
-          loading: () => const ShimmerList(),
+          loading: () => const ShimmerBannerList(color: Colors.red),
           error: (e, _) => ListView(children: [
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.6,

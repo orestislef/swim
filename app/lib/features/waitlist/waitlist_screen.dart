@@ -25,7 +25,7 @@ class WaitlistScreen extends ConsumerWidget {
       body: RefreshIndicator(
         onRefresh: () => ref.refresh(waitlistProvider.future),
         child: asyncData.when(
-          loading: () => const ShimmerList(),
+          loading: () => const ShimmerBannerList(color: Colors.amber),
           error: (e, _) => ListView(children: [
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.6,

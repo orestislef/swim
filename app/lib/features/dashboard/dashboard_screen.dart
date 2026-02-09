@@ -41,7 +41,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 onRetry: () => ref.read(dashboardProvider.notifier).load(),
               )
             : state.isLoading && state.user == null
-            ? const ShimmerList()
+            ? const ShimmerDashboard()
             : ListView(
                 padding: const EdgeInsets.all(16),
                 children: [

@@ -25,7 +25,7 @@ class SubscriptionsScreen extends ConsumerWidget {
       body: RefreshIndicator(
         onRefresh: () => ref.refresh(subscriptionsProvider.future),
         child: asyncSubs.when(
-          loading: () => const ShimmerList(),
+          loading: () => const ShimmerSubscriptionList(),
           error: (e, _) => ListView(children: [
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.6,
