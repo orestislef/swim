@@ -1,7 +1,6 @@
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:swim_college_app/core/l10n/generated/app_localizations.dart';
 import '../../core/widgets/loading_widget.dart';
 import '../../core/widgets/empty_state.dart';
@@ -81,16 +80,8 @@ class BarcodeScreen extends ConsumerWidget {
                           padding: const EdgeInsets.all(24),
                           child: Column(
                             children: [
-                              // Prefer server SVG, fall back to BarcodeWidget
-                              if (data.svg.isNotEmpty)
-                                SvgPicture.string(
-                                  data.svg.trimLeft().startsWith('<svg')
-                                      ? data.svg
-                                      : '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 100">${data.svg}</svg>',
-                                  width: 280,
-                                  height: 100,
-                                )
-                              else if (data.code.isNotEmpty)
+                              // Use BarcodeWidget to render locally from code
+                              if (data.code.isNotEmpty)
                                 BarcodeWidget(
                                   barcode: Barcode.code128(),
                                   data: data.code,
