@@ -106,10 +106,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ),
                         ],
                       ),
-                      padding: const EdgeInsets.all(12),
-                      child: Image.asset(
-                        'assets/images/logo.png',
-                        fit: BoxFit.contain,
+                      child: ClipOval(
+                        child: Image.asset(
+                          'assets/images/logo.png',
+                          width: 120,
+                          height: 120,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 16),

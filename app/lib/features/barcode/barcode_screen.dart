@@ -84,13 +84,11 @@ class BarcodeScreen extends ConsumerWidget {
                               // Prefer server SVG, fall back to BarcodeWidget
                               if (data.svg.isNotEmpty)
                                 SvgPicture.string(
-                                  '<svg xmlns="http://www.w3.org/2000/svg">${data.svg}</svg>',
+                                  data.svg.trimLeft().startsWith('<svg')
+                                      ? data.svg
+                                      : '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 100">${data.svg}</svg>',
                                   width: 280,
                                   height: 100,
-                                  colorFilter: ColorFilter.mode(
-                                    theme.colorScheme.onSurface,
-                                    BlendMode.srcIn,
-                                  ),
                                 )
                               else if (data.code.isNotEmpty)
                                 BarcodeWidget(
