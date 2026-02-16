@@ -5,11 +5,21 @@ import 'package:swim_college_app/core/l10n/generated/app_localizations.dart';
 import '../../core/widgets/loading_widget.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/error_state.dart';
+import '../../data/models/subscription.dart';
 import '../../data/models/user.dart';
 import '../dashboard/dashboard_provider.dart';
 
-final profileProvider = FutureProvider<User?>((ref) {
-  return ref.watch(dataRepositoryProvider).getProfile();
+final profileDataProvider =
+    FutureProvider<({User? user, List<Subscription> subscriptions})>((ref) async {
+  final repo = ref.watch(dataRepositoryProvider);
+  final results = await Future.wait([
+    repo.getProfile(),
+    repo.getSubscriptions(),
+  ]);
+  return (
+    user: results[0] as User?,
+    subscriptions: results[1] as List<Subscription>,
+  );
 });
 
 class ProfileScreen extends ConsumerWidget {
@@ -18,13 +28,13 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final asyncData = ref.watch(profileProvider);
+    final asyncData = ref.watch(profileDataProvider);
     final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.myProfile)),
       body: RefreshIndicator(
-        onRefresh: () => ref.refresh(profileProvider.future),
+        onRefresh: () => ref.refresh(profileDataProvider.future),
         child: asyncData.when(
           loading: () => const ShimmerProfile(),
           error: (e, _) => ListView(children: [
@@ -32,11 +42,12 @@ class ProfileScreen extends ConsumerWidget {
               height: MediaQuery.of(context).size.height * 0.6,
               child: ErrorState(
                 message: e.toString(),
-                onRetry: () => ref.invalidate(profileProvider),
+                onRetry: () => ref.invalidate(profileDataProvider),
               ),
             )
           ]),
-          data: (user) {
+          data: (data) {
+            final user = data.user;
             if (user == null) {
               return ListView(children: [
                 SizedBox(
@@ -109,6 +120,37 @@ class ProfileScreen extends ConsumerWidget {
                   label: l10n.accountBalance,
                   value: user.balance,
                 ),
+
+                // Subscriptions
+                if (data.subscriptions.isNotEmpty) ...[
+                  const SizedBox(height: 24),
+                  Text(
+                    l10n.mySubscriptions,
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(height: 8),
+                  ...data.subscriptions.map((sub) => Card(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        child: ListTile(
+                          leading: Icon(Icons.card_membership,
+                              color: theme.colorScheme.primary),
+                          title: Text(sub.name,
+                              style: theme.textTheme.titleSmall
+                                  ?.copyWith(fontWeight: FontWeight.w600)),
+                          subtitle: Text('${sub.start} - ${sub.end}'),
+                          trailing: sub.remaining.isNotEmpty
+                              ? Text(
+                                  sub.remaining,
+                                  style: TextStyle(
+                                    color: theme.colorScheme.primary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                )
+                              : null,
+                        ),
+                      )),
+                ],
 
                 const SizedBox(height: 24),
                 OutlinedButton.icon(

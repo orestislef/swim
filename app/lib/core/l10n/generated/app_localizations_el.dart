@@ -419,4 +419,25 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get noInternetConnection => 'Χωρίς σύνδεση στο διαδίκτυο';
+
+  @override
+  String get teacher => 'Εκπαιδευτής';
+
+  @override
+  String get availableSpots => 'Διαθέσιμες Θέσεις';
+
+  @override
+  String get remaining => 'απομένουν';
+
+  @override
+  String get upcoming => 'Επερχόμενα';
+
+  @override
+  String get pastClasses => 'Παρελθόντα';
+
+  @override
+  String get totalAttendances => 'Συνολικές Παρουσίες';
+
+  @override
+  String get viewAll => 'Προβολή Όλων';
 }

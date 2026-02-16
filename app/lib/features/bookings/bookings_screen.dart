@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:swim_college_app/core/l10n/generated/app_localizations.dart';
 import '../../core/date_utils.dart' as du;
 import '../../core/widgets/loading_widget.dart';
@@ -65,6 +66,20 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
     final l10n = AppLocalizations.of(context)!;
     final state = ref.watch(bookingsProvider);
     final isGreek = ref.watch(settingsProvider).locale.languageCode == 'el';
+    final theme = Theme.of(context);
+
+    // Split bookings into upcoming and past
+    final now = DateTime.now();
+    final upcoming = <Booking>[];
+    final past = <Booking>[];
+    for (final b in state.bookings) {
+      final dt = du.parseBookingDateTime(b.date, b.time);
+      if (dt != null && dt.isAfter(now)) {
+        upcoming.add(b);
+      } else {
+        past.add(b);
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.myBookings)),
@@ -90,20 +105,96 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
                       ),
                     ],
                   )
-                : ListView.builder(
+                : ListView(
                     padding: const EdgeInsets.all(16),
-                    itemCount: state.bookings.length,
-                    itemBuilder: (context, index) {
-                      final booking = state.bookings[index];
-                      return _BookingListItem(
-                        booking: booking,
-                        isGreek: isGreek,
-                        onCancel:
-                            booking.canCancel ? () => _cancelBooking(booking) : null,
-                      );
-                    },
+                    children: [
+                      // Attendance summary card
+                      Card(
+                        color: theme.colorScheme.primaryContainer.withAlpha(80),
+                        child: ListTile(
+                          leading: Icon(Icons.fact_check,
+                              color: theme.colorScheme.primary),
+                          title: Text(
+                            '${l10n.totalAttendances}: ${state.totalAttendances}',
+                            style: theme.textTheme.titleSmall
+                                ?.copyWith(fontWeight: FontWeight.w600),
+                          ),
+                          trailing: TextButton(
+                            onPressed: () => context.go('/attendances'),
+                            child: Text(l10n.viewAll),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Upcoming section
+                      if (upcoming.isNotEmpty) ...[
+                        _SectionHeader(
+                          title: '${l10n.upcoming} (${upcoming.length})',
+                          icon: Icons.upcoming,
+                          color: theme.colorScheme.primary,
+                        ),
+                        const SizedBox(height: 8),
+                        ...upcoming.map((b) => _BookingListItem(
+                              booking: b,
+                              isGreek: isGreek,
+                              onCancel: b.canCancel
+                                  ? () => _cancelBooking(b)
+                                  : null,
+                            )),
+                      ],
+
+                      // Past section
+                      if (past.isNotEmpty) ...[
+                        if (upcoming.isNotEmpty)
+                          const SizedBox(height: 16),
+                        _SectionHeader(
+                          title: '${l10n.pastClasses} (${past.length})',
+                          icon: Icons.history,
+                          color: theme.colorScheme.outline,
+                        ),
+                        const SizedBox(height: 8),
+                        ...past.map((b) => _BookingListItem(
+                              booking: b,
+                              isGreek: isGreek,
+                              onCancel: b.canCancel
+                                  ? () => _cancelBooking(b)
+                                  : null,
+                            )),
+                      ],
+                    ],
                   ),
       ),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final Color color;
+
+  const _SectionHeader({
+    required this.title,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      children: [
+        Icon(icon, size: 20, color: color),
+        const SizedBox(width: 8),
+        Text(
+          title,
+          style: theme.textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: color,
+          ),
+        ),
+      ],
     );
   }
 }

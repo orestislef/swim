@@ -177,6 +177,19 @@ class _BookClassScreenState extends ConsumerState<BookClassScreen> {
                     _ConfirmRow(
                         label: l10n.timeLabel,
                         value: state.selectedSlot?.time ?? ''),
+                    if (state.selectedSlot?.teacher.isNotEmpty == true) ...[
+                      const SizedBox(height: 8),
+                      _ConfirmRow(
+                          label: l10n.teacher,
+                          value: state.selectedSlot!.teacher),
+                    ],
+                    if (state.selectedSlot != null &&
+                        state.selectedSlot!.persons >= 0) ...[
+                      const SizedBox(height: 8),
+                      _ConfirmRow(
+                          label: l10n.availableSpots,
+                          value: '${state.selectedSlot!.persons}'),
+                    ],
                     const SizedBox(height: 8),
                     Row(
                       children: [

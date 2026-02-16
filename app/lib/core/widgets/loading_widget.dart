@@ -68,7 +68,7 @@ class ShimmerList extends StatelessWidget {
   }
 }
 
-/// Dashboard: 2 rows of stat cards + booking list tiles
+/// Dashboard: quick actions + stat cards + subscription progress + booking tiles
 class ShimmerDashboard extends StatelessWidget {
   const ShimmerDashboard({super.key});
 
@@ -84,7 +84,44 @@ class ShimmerDashboard extends StatelessWidget {
           const _Box(width: 180, height: 24, radius: 6),
           const SizedBox(height: 8),
           const _Box(width: 120, height: 14, radius: 4),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
+          // Quick actions
+          Row(
+            children: [
+              Expanded(
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        _Box(width: 24, height: 24, radius: 6),
+                        SizedBox(width: 8),
+                        _Box(width: 80, height: 16, radius: 4),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        _Box(width: 24, height: 24, radius: 6),
+                        SizedBox(width: 8),
+                        _Box(width: 80, height: 16, radius: 4),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
           // Stat cards row 1
           Row(
             children: const [
@@ -101,6 +138,36 @@ class ShimmerDashboard extends StatelessWidget {
               SizedBox(width: 12),
               Expanded(child: _ShimmerStatCard()),
             ],
+          ),
+          const SizedBox(height: 16),
+          // Subscription progress card
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Row(
+                    children: [
+                      _Box(width: 24, height: 24, radius: 6),
+                      SizedBox(width: 12),
+                      Expanded(child: _Box(width: 140, height: 16, radius: 4)),
+                      _Box(width: 20, height: 20, radius: 4),
+                    ],
+                  ),
+                  SizedBox(height: 12),
+                  _Box(width: double.infinity, height: 8, radius: 4),
+                  SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _Box(width: 100, height: 12, radius: 4),
+                      _Box(width: 80, height: 12, radius: 4),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ),
           const SizedBox(height: 24),
           // Section title
@@ -397,7 +464,7 @@ class ShimmerBarcode extends StatelessWidget {
   }
 }
 
-/// Profile: avatar + name + badge + field cards
+/// Profile: avatar + name + badge + field cards + subscription cards
 class ShimmerProfile extends StatelessWidget {
   const ShimmerProfile({super.key});
 
@@ -428,6 +495,18 @@ class ShimmerProfile extends StatelessWidget {
             ),
           ],
           const SizedBox(height: 24),
+          // Subscription section
+          const _Box(width: 140, height: 18, radius: 4),
+          const SizedBox(height: 8),
+          Card(
+            child: ListTile(
+              leading: const _Box(width: 24, height: 24, radius: 6),
+              title: const _Box(width: 120, height: 14, radius: 4),
+              subtitle: const _Box(width: 100, height: 12, radius: 4),
+              trailing: const _Box(width: 40, height: 16, radius: 4),
+            ),
+          ),
+          const SizedBox(height: 16),
           const _Box(width: double.infinity, height: 40, radius: 20),
         ],
       ),

@@ -418,4 +418,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noInternetConnection => 'No internet connection';
+
+  @override
+  String get teacher => 'Teacher';
+
+  @override
+  String get availableSpots => 'Available Spots';
+
+  @override
+  String get remaining => 'remaining';
+
+  @override
+  String get upcoming => 'Upcoming';
+
+  @override
+  String get pastClasses => 'Past';
+
+  @override
+  String get totalAttendances => 'Total Attendances';
+
+  @override
+  String get viewAll => 'View All';
 }

@@ -7,6 +7,7 @@ import '../../core/widgets/loading_widget.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/error_state.dart';
 import '../../data/models/booking.dart';
+import '../../data/models/subscription.dart';
 import '../../features/settings/settings_provider.dart';
 import 'dashboard_provider.dart';
 
@@ -55,7 +56,31 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   Text(l10n.overview,
                       style: theme.textTheme.bodyMedium
                           ?.copyWith(color: theme.colorScheme.outline)),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
+
+                  // Quick actions
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _QuickActionCard(
+                          icon: Icons.add_circle,
+                          label: l10n.bookClass,
+                          color: theme.colorScheme.primary,
+                          onTap: () => context.go('/book-class'),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _QuickActionCard(
+                          icon: Icons.qr_code,
+                          label: l10n.navBarcode,
+                          color: theme.colorScheme.tertiary,
+                          onTap: () => context.go('/barcode'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
 
                   // Stat cards
                   if (state.user != null) ...[
@@ -75,7 +100,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             icon: Icons.event,
                             label: l10n.expires,
                             value: state.user!.expiry,
-                            color: Colors.orange,
+                            color: _expiryColor(state.user!.expiry),
                           ),
                         ),
                       ],
@@ -101,6 +126,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           ),
                         ),
                       ],
+                    ),
+                  ],
+
+                  // Subscription progress
+                  if (state.subscriptions.isNotEmpty) ...[
+                    const SizedBox(height: 16),
+                    _SubscriptionProgressCard(
+                      subscription: state.subscriptions.first,
+                      isGreek: isGreek,
+                      onTap: () => context.go('/subscriptions'),
                     ),
                   ],
 
@@ -137,6 +172,152 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         ),
                 ],
               ),
+      ),
+    );
+  }
+
+  Color _expiryColor(String expiry) {
+    final date = du.parseGreekDate(expiry);
+    if (date == null) return Colors.orange;
+    final daysLeft = date.difference(DateTime.now()).inDays;
+    if (daysLeft <= 7) return Colors.red;
+    if (daysLeft <= 30) return Colors.orange;
+    return Colors.green;
+  }
+}
+
+class _QuickActionCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _QuickActionCard({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: color, size: 24),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  label,
+                  style: theme.textTheme.titleSmall
+                      ?.copyWith(fontWeight: FontWeight.w600),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SubscriptionProgressCard extends StatelessWidget {
+  final Subscription subscription;
+  final bool isGreek;
+  final VoidCallback onTap;
+
+  const _SubscriptionProgressCard({
+    required this.subscription,
+    required this.isGreek,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final progress = du.parseAttendances(subscription.attendances);
+
+    return Card(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.card_membership,
+                      color: theme.colorScheme.primary, size: 24),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      subscription.name,
+                      style: theme.textTheme.titleSmall
+                          ?.copyWith(fontWeight: FontWeight.w600),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Icon(Icons.chevron_right,
+                      color: theme.colorScheme.outline, size: 20),
+                ],
+              ),
+              if (progress != null && progress.total > 0) ...[
+                const SizedBox(height: 12),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: progress.used / progress.total,
+                    minHeight: 8,
+                    backgroundColor:
+                        theme.colorScheme.primaryContainer.withAlpha(100),
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '${progress.used}/${progress.total} ${l10n.subscriptionAttendances.toLowerCase()}',
+                      style: theme.textTheme.bodySmall
+                          ?.copyWith(color: theme.colorScheme.outline),
+                    ),
+                    if (subscription.remaining.isNotEmpty)
+                      Text(
+                        '${subscription.remaining} ${isGreek ? 'απομένουν' : 'remaining'}',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+              if (subscription.start.isNotEmpty ||
+                  subscription.end.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Text(
+                  '${subscription.start} - ${subscription.end}',
+                  style: theme.textTheme.bodySmall
+                      ?.copyWith(color: theme.colorScheme.outline),
+                ),
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }

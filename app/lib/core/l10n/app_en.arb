@@ -136,5 +136,12 @@
   "@notificationTomorrow": { "placeholders": { "course": { "type": "String" }, "time": { "type": "String" } } },
   "notificationSoon": "Starting soon! {course} in 1 hour",
   "@notificationSoon": { "placeholders": { "course": { "type": "String" } } },
-  "noInternetConnection": "No internet connection"
+  "noInternetConnection": "No internet connection",
+  "teacher": "Teacher",
+  "availableSpots": "Available Spots",
+  "remaining": "remaining",
+  "upcoming": "Upcoming",
+  "pastClasses": "Past",
+  "totalAttendances": "Total Attendances",
+  "viewAll": "View All"
 }

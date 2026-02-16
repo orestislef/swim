@@ -895,6 +895,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No internet connection'**
   String get noInternetConnection;
+
+  /// No description provided for @teacher.
+  ///
+  /// In en, this message translates to:
+  /// **'Teacher'**
+  String get teacher;
+
+  /// No description provided for @availableSpots.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Spots'**
+  String get availableSpots;
+
+  /// No description provided for @remaining.
+  ///
+  /// In en, this message translates to:
+  /// **'remaining'**
+  String get remaining;
+
+  /// No description provided for @upcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming'**
+  String get upcoming;
+
+  /// No description provided for @pastClasses.
+  ///
+  /// In en, this message translates to:
+  /// **'Past'**
+  String get pastClasses;
+
+  /// No description provided for @totalAttendances.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Attendances'**
+  String get totalAttendances;
+
+  /// No description provided for @viewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View All'**
+  String get viewAll;
 }
 
 class _AppLocalizationsDelegate

@@ -42,6 +42,13 @@ DateTime? parseBookingDateTime(String dateStr, String timeStr) {
   return DateTime(date.year, date.month, date.day, time.startHour, time.startMinute);
 }
 
+/// Parses attendance strings like "5/20" into (used, total).
+({int used, int total})? parseAttendances(String attendances) {
+  final match = RegExp(r'(\d+)\s*/\s*(\d+)').firstMatch(attendances);
+  if (match == null) return null;
+  return (used: int.parse(match.group(1)!), total: int.parse(match.group(2)!));
+}
+
 /// Returns a human-readable countdown string.
 String formatCountdown(DateTime classTime, {required bool isGreek}) {
   final now = DateTime.now();

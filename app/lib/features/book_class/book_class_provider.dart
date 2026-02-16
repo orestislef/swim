@@ -66,6 +66,19 @@ class BookClassNotifier extends Notifier<BookClassState> {
     state = state.copyWith(isLoading: true);
     final types = await _dataRepo.getCourseTypes();
     state = state.copyWith(courseTypes: types, isLoading: false);
+
+    // Pre-select from most recent booking if available
+    if (types.isNotEmpty) {
+      try {
+        final dashState = ref.read(dashboardProvider);
+        if (dashState.bookings.isNotEmpty) {
+          final recentCourse = dashState.bookings.first.course;
+          if (types.contains(recentCourse)) {
+            selectCourse(recentCourse);
+          }
+        }
+      } catch (_) {}
+    }
   }
 
   void selectCourse(String course) {
