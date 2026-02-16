@@ -9,7 +9,8 @@
       "Bash(open:*)",
       "Bash(flutter gen-l10n:*)",
       "Bash(flutter build:*)",
-      "Bash(flutter analyze:*)"
+      "Bash(flutter analyze:*)",
+      "WebFetch(domain:flutter.dev)"
     ]
   }
 }
