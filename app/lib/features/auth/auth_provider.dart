@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../data/api_client.dart';
 import '../../data/models/user.dart';
 import '../../data/repositories/auth_repository.dart';
@@ -50,9 +51,29 @@ class AuthNotifier extends Notifier<AuthState> {
   Future<void> checkAuth() async {
     final authRepo = ref.read(authRepositoryProvider);
     final isAuth = await authRepo.checkAuthStatus();
-    state = AuthState(
-      status: isAuth ? AuthStatus.authenticated : AuthStatus.unauthenticated,
-    );
+
+    if (isAuth) {
+      state = const AuthState(status: AuthStatus.authenticated);
+      return;
+    }
+
+    // Session cookies missing/expired — try auto-login with saved credentials
+    final prefs = await SharedPreferences.getInstance();
+    final username = prefs.getString('saved_username');
+    final password = prefs.getString('saved_password');
+
+    if (username != null &&
+        password != null &&
+        username.isNotEmpty &&
+        password.isNotEmpty) {
+      final result = await authRepo.login(username, password);
+      if (result.success) {
+        state = AuthState(status: AuthStatus.authenticated, user: result.user);
+        return;
+      }
+    }
+
+    state = const AuthState(status: AuthStatus.unauthenticated);
   }
 
   Future<void> login(String username, String password) async {

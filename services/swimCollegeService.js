@@ -135,7 +135,12 @@ class SwimCollegeService {
         'Cookie': Array.isArray(cookies) ? cookies.join('; ') : (cookies || '')
       }
     });
-    return response.data;
+    const html = response.data;
+    // Detect if ASP.NET session expired and redirected to login page
+    if (typeof html === 'string' && html.includes('id="TextBox1"') && html.includes('id="TextBox2"')) {
+      throw new Error('Session expired');
+    }
+    return html;
   }
 
   parseDashboard(html) {
