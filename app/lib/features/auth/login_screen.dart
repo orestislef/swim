@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swim_college_app/core/l10n/generated/app_localizations.dart';
@@ -60,6 +61,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     await ref.read(authProvider.notifier).login(username, password);
     final authState = ref.read(authProvider);
     if (authState.status == AuthStatus.authenticated) {
+      TextInput.finishAutofillContext();
       await _saveCredentials(username, password);
     }
   }
@@ -140,7 +142,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(24),
-                        child: Column(
+                        child: AutofillGroup(
+                          child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Text(
@@ -165,6 +168,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 controller: _usernameController,
                                 keyboardType: TextInputType.text,
                                 textInputAction: TextInputAction.next,
+                                autofillHints: const [AutofillHints.username],
                                 decoration: InputDecoration(
                                   labelText: l10n.username,
                                   hintText: l10n.enterUsername,
@@ -188,6 +192,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 controller: _passwordController,
                                 obscureText: _obscurePassword,
                                 textInputAction: TextInputAction.done,
+                                autofillHints: const [AutofillHints.password],
                                 onSubmitted: (_) => _login(),
                                 decoration: InputDecoration(
                                   labelText: l10n.password,
@@ -229,6 +234,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   : Text(l10n.signIn),
                             ),
                           ],
+                        ),
                         ),
                       ),
                     ),
