@@ -50,13 +50,30 @@ DateTime? parseBookingDateTime(String dateStr, String timeStr) {
 }
 
 /// Returns a human-readable countdown string.
-String formatCountdown(DateTime classTime, {required bool isGreek}) {
+String formatCountdown(DateTime classTime, {required String locale}) {
   final now = DateTime.now();
   final diff = classTime.difference(now);
-  if (diff.isNegative) return isGreek ? 'Παρελθόν' : 'Past';
-  if (diff.inMinutes < 60) return isGreek ? 'σε ${diff.inMinutes} λεπτά' : 'in ${diff.inMinutes} min';
-  if (diff.inHours < 24) return isGreek ? 'σε ${diff.inHours} ώρες' : 'in ${diff.inHours} hours';
-  if (diff.inDays == 0) return isGreek ? 'Σήμερα' : 'Today';
-  if (diff.inDays == 1) return isGreek ? 'Αύριο' : 'Tomorrow';
-  return isGreek ? 'σε ${diff.inDays} ημέρες' : 'in ${diff.inDays} days';
+  switch (locale) {
+    case 'el':
+      if (diff.isNegative) return 'Παρελθόν';
+      if (diff.inMinutes < 60) return 'σε ${diff.inMinutes} λεπτά';
+      if (diff.inHours < 24) return 'σε ${diff.inHours} ώρες';
+      if (diff.inDays == 0) return 'Σήμερα';
+      if (diff.inDays == 1) return 'Αύριο';
+      return 'σε ${diff.inDays} ημέρες';
+    case 'ru':
+      if (diff.isNegative) return 'Прошло';
+      if (diff.inMinutes < 60) return 'через ${diff.inMinutes} мин.';
+      if (diff.inHours < 24) return 'через ${diff.inHours} ч.';
+      if (diff.inDays == 0) return 'Сегодня';
+      if (diff.inDays == 1) return 'Завтра';
+      return 'через ${diff.inDays} дн.';
+    default:
+      if (diff.isNegative) return 'Past';
+      if (diff.inMinutes < 60) return 'in ${diff.inMinutes} min';
+      if (diff.inHours < 24) return 'in ${diff.inHours} hours';
+      if (diff.inDays == 0) return 'Today';
+      if (diff.inDays == 1) return 'Tomorrow';
+      return 'in ${diff.inDays} days';
+  }
 }

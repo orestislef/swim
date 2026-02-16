@@ -62,13 +62,18 @@ class BookClassNotifier extends Notifier<BookClassState> {
 
   DataRepository get _dataRepo => ref.read(dataRepositoryProvider);
 
-  Future<void> loadCourses() async {
+  Future<void> loadCourses({String? preselectedCourse}) async {
     state = state.copyWith(isLoading: true);
     final types = await _dataRepo.getCourseTypes();
     state = state.copyWith(courseTypes: types, isLoading: false);
 
-    // Pre-select from most recent booking if available
     if (types.isNotEmpty) {
+      // Use explicit preselection if provided
+      if (preselectedCourse != null && types.contains(preselectedCourse)) {
+        selectCourse(preselectedCourse);
+        return;
+      }
+      // Otherwise pre-select from most recent booking if available
       try {
         final dashState = ref.read(dashboardProvider);
         if (dashState.bookings.isNotEmpty) {

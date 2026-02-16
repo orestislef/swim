@@ -7,6 +7,7 @@ import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_el.dart';
 import 'app_localizations_en.dart';
+import 'app_localizations_ru.dart';
 
 // ignore_for_file: type=lint
 
@@ -96,6 +97,7 @@ abstract class AppLocalizations {
   static const List<Locale> supportedLocales = <Locale>[
     Locale('el'),
     Locale('en'),
+    Locale('ru'),
   ];
 
   /// No description provided for @appTitle.
@@ -698,6 +700,12 @@ abstract class AppLocalizations {
   /// **'English'**
   String get english;
 
+  /// No description provided for @russian.
+  ///
+  /// In en, this message translates to:
+  /// **'Русский'**
+  String get russian;
+
   /// No description provided for @today.
   ///
   /// In en, this message translates to:
@@ -937,6 +945,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View All'**
   String get viewAll;
+
+  /// No description provided for @todaysClass.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Class'**
+  String get todaysClass;
+
+  /// No description provided for @showBarcode.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Barcode'**
+  String get showBarcode;
+
+  /// No description provided for @lowBalanceWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Only {count} classes remaining on {name}!'**
+  String lowBalanceWarning(int count, String name);
+
+  /// No description provided for @bookAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Book Again'**
+  String get bookAgain;
+
+  /// No description provided for @viewMyBookings.
+  ///
+  /// In en, this message translates to:
+  /// **'View My Bookings'**
+  String get viewMyBookings;
+
+  /// No description provided for @bookAnotherClass.
+  ///
+  /// In en, this message translates to:
+  /// **'Book Another Class'**
+  String get bookAnotherClass;
+
+  /// No description provided for @addToWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to Wallet'**
+  String get addToWallet;
+
+  /// No description provided for @comingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon!'**
+  String get comingSoon;
+
+  /// No description provided for @nextClass.
+  ///
+  /// In en, this message translates to:
+  /// **'Next Class'**
+  String get nextClass;
+
+  /// No description provided for @totalCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get totalCount;
+
+  /// No description provided for @thisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This Month'**
+  String get thisMonth;
+
+  /// No description provided for @waitlistAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'You have {count} items on the waitlist'**
+  String waitlistAlert(int count);
+
+  /// No description provided for @cancellationsAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} class cancellations'**
+  String cancellationsAlert(int count);
 }
 
 class _AppLocalizationsDelegate
@@ -950,7 +1036,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['el', 'en'].contains(locale.languageCode);
+      <String>['el', 'en', 'ru'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -963,6 +1049,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       return AppLocalizationsEl();
     case 'en':
       return AppLocalizationsEn();
+    case 'ru':
+      return AppLocalizationsRu();
   }
 
   throw FlutterError(

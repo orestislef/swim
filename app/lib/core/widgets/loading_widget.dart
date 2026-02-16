@@ -319,6 +319,11 @@ class ShimmerSubscriptionList extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                 ],
+                // Progress bar placeholder
+                const SizedBox(height: 8),
+                const _Box(width: double.infinity, height: 8, radius: 4),
+                const SizedBox(height: 8),
+                const _Box(width: 80, height: 12, radius: 4),
               ],
             ),
           ),
@@ -328,10 +333,20 @@ class ShimmerSubscriptionList extends StatelessWidget {
   }
 }
 
-/// Attendances: table-like shimmer
+/// Attendances: table-like shimmer (kept for backwards compat)
 class ShimmerTable extends StatelessWidget {
   final int rowCount;
   const ShimmerTable({super.key, this.rowCount = 8});
+
+  @override
+  Widget build(BuildContext context) {
+    return const ShimmerAttendances();
+  }
+}
+
+/// Attendances: summary card + monthly grouped cards
+class ShimmerAttendances extends StatelessWidget {
+  const ShimmerAttendances({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -341,39 +356,76 @@ class ShimmerTable extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.all(16),
         children: [
+          // Summary stats card
           Card(
             child: Padding(
               padding: const EdgeInsets.all(16),
-              child: Column(
+              child: Row(
                 children: [
-                  // Header row
-                  Row(
-                    children: const [
-                      Expanded(child: _Box(width: 60, height: 14, radius: 4)),
-                      SizedBox(width: 24),
-                      Expanded(child: _Box(width: 60, height: 14, radius: 4)),
-                    ],
-                  ),
-                  const Divider(height: 24),
-                  // Data rows
-                  for (int i = 0; i < rowCount; i++) ...[
-                    Row(
+                  const Expanded(
+                    child: Row(
                       children: [
-                        const _Box(width: 14, height: 14, radius: 3),
-                        const SizedBox(width: 8),
-                        const Expanded(child: _Box(width: 80, height: 12, radius: 4)),
-                        const SizedBox(width: 24),
-                        const _Box(width: 14, height: 14, radius: 3),
-                        const SizedBox(width: 8),
-                        const Expanded(child: _Box(width: 60, height: 12, radius: 4)),
+                        _Box(width: 20, height: 20, radius: 4),
+                        SizedBox(width: 8),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _Box(width: 50, height: 12, radius: 4),
+                            SizedBox(height: 4),
+                            _Box(width: 30, height: 18, radius: 4),
+                          ],
+                        ),
                       ],
                     ),
-                    if (i < rowCount - 1) const SizedBox(height: 16),
-                  ],
+                  ),
+                  Container(width: 1, height: 40, color: Colors.transparent),
+                  const Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 16),
+                      child: Row(
+                        children: [
+                          _Box(width: 20, height: 20, radius: 4),
+                          SizedBox(width: 8),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _Box(width: 60, height: 12, radius: 4),
+                              SizedBox(height: 4),
+                              _Box(width: 20, height: 18, radius: 4),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
+          const SizedBox(height: 16),
+          // Month section header
+          Row(
+            children: const [
+              _Box(width: 18, height: 18, radius: 4),
+              SizedBox(width: 8),
+              _Box(width: 140, height: 16, radius: 4),
+            ],
+          ),
+          const SizedBox(height: 8),
+          // Attendance cards
+          for (int i = 0; i < 4; i++) ...[
+            Card(
+              margin: const EdgeInsets.only(bottom: 8),
+              child: ListTile(
+                leading: const CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  child: _Box(width: 40, height: 40, radius: 20),
+                ),
+                title: const _Box(width: 120, height: 14, radius: 4),
+                trailing: const _Box(width: 60, height: 14, radius: 4),
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -419,7 +471,7 @@ class ShimmerBannerList extends StatelessWidget {
   }
 }
 
-/// Barcode: centered icon + text + card with barcode placeholder
+/// Barcode: centered icon + text + card with barcode + member info + next class
 class ShimmerBarcode extends StatelessWidget {
   const ShimmerBarcode({super.key});
 
@@ -451,8 +503,27 @@ class ShimmerBarcode extends StatelessWidget {
                         _Box(width: 280, height: 100, radius: 4),
                         SizedBox(height: 16),
                         _Box(width: 180, height: 24, radius: 4),
+                        // Member info
+                        SizedBox(height: 16),
+                        Divider(),
+                        SizedBox(height: 12),
+                        _Box(width: 140, height: 16, radius: 4),
+                        SizedBox(height: 4),
+                        _Box(width: 100, height: 12, radius: 4),
                       ],
                     ),
+                  ),
+                ),
+                // Add to wallet button
+                const SizedBox(height: 16),
+                const _Box(width: 160, height: 40, radius: 20),
+                // Next class card
+                const SizedBox(height: 24),
+                Card(
+                  child: ListTile(
+                    leading: const _Box(width: 24, height: 24, radius: 6),
+                    title: const _Box(width: 80, height: 14, radius: 4),
+                    subtitle: const _Box(width: 140, height: 12, radius: 4),
                   ),
                 ),
               ],

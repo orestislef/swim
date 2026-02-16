@@ -11,7 +11,10 @@
       "Bash(flutter build:*)",
       "Bash(flutter analyze:*)",
       "WebFetch(domain:flutter.dev)",
-      "Bash(flutter clean:*)"
+      "Bash(flutter clean:*)",
+      "WebFetch(domain:pub.dev)",
+      "Bash(flutter pub get:*)",
+      "WebFetch(domain:github.com)"
     ]
   }
 }

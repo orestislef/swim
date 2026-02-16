@@ -7,7 +7,8 @@ import '../../data/models/time_slot.dart';
 import 'book_class_provider.dart';
 
 class BookClassScreen extends ConsumerStatefulWidget {
-  const BookClassScreen({super.key});
+  final String? preselectedCourse;
+  const BookClassScreen({super.key, this.preselectedCourse});
 
   @override
   ConsumerState<BookClassScreen> createState() => _BookClassScreenState();
@@ -17,7 +18,9 @@ class _BookClassScreenState extends ConsumerState<BookClassScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => ref.read(bookClassProvider.notifier).loadCourses());
+    Future.microtask(() => ref
+        .read(bookClassProvider.notifier)
+        .loadCourses(preselectedCourse: widget.preselectedCourse));
   }
 
   @override
@@ -26,19 +29,80 @@ class _BookClassScreenState extends ConsumerState<BookClassScreen> {
     final state = ref.watch(bookClassProvider);
     final theme = Theme.of(context);
 
-    // Handle booking success
+    // Booking success view
     if (state.bookingSuccess) {
-      Future.microtask(() {
-        if (!context.mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.bookingSuccess),
-            backgroundColor: Colors.green,
-          ),
-        );
-        ref.read(bookClassProvider.notifier).reset();
-        context.go('/bookings');
-      });
+      return Scaffold(
+        appBar: AppBar(title: Text(l10n.bookClass)),
+        body: ListView(
+          padding: const EdgeInsets.all(24),
+          children: [
+            const SizedBox(height: 40),
+            const Icon(Icons.check_circle, size: 80, color: Colors.green),
+            const SizedBox(height: 16),
+            Text(
+              l10n.bookingSuccess,
+              style: theme.textTheme.headlineSmall
+                  ?.copyWith(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              l10n.bookingSuccessDetails,
+              style: theme.textTheme.bodyMedium
+                  ?.copyWith(color: theme.colorScheme.outline),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _ConfirmRow(
+                        label: l10n.classType,
+                        value: state.selectedCourse ?? ''),
+                    const SizedBox(height: 8),
+                    _ConfirmRow(
+                      label: l10n.dateLabel,
+                      value: state.selectedDate != null
+                          ? '${state.selectedDate!.day}/${state.selectedDate!.month}/${state.selectedDate!.year}'
+                          : '',
+                    ),
+                    const SizedBox(height: 8),
+                    _ConfirmRow(
+                        label: l10n.timeLabel,
+                        value: state.selectedSlot?.time ?? ''),
+                    if (state.selectedSlot?.teacher.isNotEmpty == true) ...[
+                      const SizedBox(height: 8),
+                      _ConfirmRow(
+                          label: l10n.teacher,
+                          value: state.selectedSlot!.teacher),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            FilledButton.icon(
+              onPressed: () {
+                ref.read(bookClassProvider.notifier).reset();
+                context.go('/bookings');
+              },
+              icon: const Icon(Icons.list_alt),
+              label: Text(l10n.viewMyBookings),
+            ),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: () {
+                ref.read(bookClassProvider.notifier).reset();
+              },
+              icon: const Icon(Icons.add),
+              label: Text(l10n.bookAnotherClass),
+            ),
+          ],
+        ),
+      );
     }
 
     return Scaffold(

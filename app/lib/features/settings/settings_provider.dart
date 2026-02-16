@@ -86,9 +86,11 @@ class SettingsNotifier extends Notifier<SettingsState> {
   }
 
   void toggleLocale() {
-    final next = state.locale.languageCode == 'el'
-        ? const Locale('en')
-        : const Locale('el');
+    final next = switch (state.locale.languageCode) {
+      'el' => const Locale('en'),
+      'en' => const Locale('ru'),
+      _ => const Locale('el'),
+    };
     setLocale(next);
   }
 

@@ -22,7 +22,27 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+    // load() has built-in guards: skips if already loaded or in progress.
+    // Auth listener in provider handles reload after login.
     Future.microtask(() => ref.read(dashboardProvider.notifier).load());
+  }
+
+  Booking? _getTodaysNextClass(List<Booking> bookings) {
+    final now = DateTime.now();
+    final todayEnd = DateTime(now.year, now.month, now.day + 1);
+    Booking? nearest;
+    DateTime? nearestTime;
+    for (final b in bookings) {
+      final dt = du.parseBookingDateTime(b.date, b.time);
+      if (dt == null) continue;
+      if (dt.isAfter(now) && dt.isBefore(todayEnd)) {
+        if (nearestTime == null || dt.isBefore(nearestTime)) {
+          nearest = b;
+          nearestTime = dt;
+        }
+      }
+    }
+    return nearest;
   }
 
   @override
@@ -30,16 +50,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final l10n = AppLocalizations.of(context)!;
     final state = ref.watch(dashboardProvider);
     final theme = Theme.of(context);
-    final isGreek = ref.watch(settingsProvider).locale.languageCode == 'el';
+    final locale = ref.watch(settingsProvider).locale.languageCode;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.dashboard)),
       body: RefreshIndicator(
-        onRefresh: () => ref.read(dashboardProvider.notifier).load(),
+        onRefresh: () => ref.read(dashboardProvider.notifier).load(force: true),
         child: state.error != null && state.user == null
             ? ErrorState(
                 message: state.error!,
-                onRetry: () => ref.read(dashboardProvider.notifier).load(),
+                onRetry: () => ref.read(dashboardProvider.notifier).load(force: true),
               )
             : state.isLoading && state.user == null
             ? const ShimmerDashboard()
@@ -57,6 +77,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       style: theme.textTheme.bodyMedium
                           ?.copyWith(color: theme.colorScheme.outline)),
                   const SizedBox(height: 16),
+
+                  // Today's class hero card
+                  if (_getTodaysNextClass(state.bookings) case final todayClass?) ...[
+                    _TodaysClassHeroCard(
+                      booking: todayClass,
+                      locale: locale,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
 
                   // Quick actions
                   Row(
@@ -134,8 +163,55 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     const SizedBox(height: 16),
                     _SubscriptionProgressCard(
                       subscription: state.subscriptions.first,
-                      isGreek: isGreek,
+                      locale: locale,
                       onTap: () => context.go('/subscriptions'),
+                    ),
+                  ],
+
+                  // Low-balance warning
+                  for (final sub in state.subscriptions) ...[
+                    () {
+                      final progress = du.parseAttendances(sub.attendances);
+                      if (progress != null &&
+                          progress.total > 0 &&
+                          (progress.total - progress.used) <= 3 &&
+                          (progress.total - progress.used) > 0) {
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: _AlertBanner(
+                            icon: Icons.warning_amber_rounded,
+                            message: l10n.lowBalanceWarning(
+                              progress.total - progress.used,
+                              sub.name,
+                            ),
+                            color: Colors.amber,
+                            onTap: () => context.go('/subscriptions'),
+                          ),
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    }(),
+                  ],
+
+                  // Waitlist alert
+                  if (state.waitlistCount > 0) ...[
+                    const SizedBox(height: 8),
+                    _AlertBanner(
+                      icon: Icons.hourglass_top,
+                      message: l10n.waitlistAlert(state.waitlistCount),
+                      color: Colors.amber,
+                      onTap: () => context.go('/waitlist'),
+                    ),
+                  ],
+
+                  // Cancellations alert
+                  if (state.cancellationsCount > 0) ...[
+                    const SizedBox(height: 8),
+                    _AlertBanner(
+                      icon: Icons.cancel_outlined,
+                      message: l10n.cancellationsAlert(state.cancellationsCount),
+                      color: theme.colorScheme.error,
+                      onTap: () => context.go('/cancellations'),
                     ),
                   ],
 
@@ -168,7 +244,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     )
                   else
                     ...state.bookings.take(5).map(
-                          (b) => _BookingCard(booking: b, isGreek: isGreek),
+                          (b) => _BookingCard(booking: b, locale: locale),
                         ),
                 ],
               ),
@@ -183,6 +259,170 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     if (daysLeft <= 7) return Colors.red;
     if (daysLeft <= 30) return Colors.orange;
     return Colors.green;
+  }
+}
+
+class _TodaysClassHeroCard extends StatelessWidget {
+  final Booking booking;
+  final String locale;
+
+  const _TodaysClassHeroCard({
+    required this.booking,
+    required this.locale,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final classTime = du.parseBookingDateTime(booking.date, booking.time);
+    final countdown = classTime != null
+        ? du.formatCountdown(classTime, locale: locale)
+        : '';
+
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            theme.colorScheme.primary,
+            theme.colorScheme.tertiary,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => context.go('/bookings'),
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.todaysClass,
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          color: Colors.white70,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        booking.course,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        booking.time,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: Colors.white70,
+                        ),
+                      ),
+                      if (countdown.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withAlpha(40),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            countdown,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                FilledButton.tonal(
+                  onPressed: () => context.go('/barcode'),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.white.withAlpha(40),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.qr_code, size: 28),
+                      const SizedBox(height: 4),
+                      Text(
+                        l10n.showBarcode,
+                        style: const TextStyle(fontSize: 11),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AlertBanner extends StatelessWidget {
+  final IconData icon;
+  final String message;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _AlertBanner({
+    required this.icon,
+    required this.message,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: color.withAlpha(25),
+          borderRadius: BorderRadius.circular(12),
+          border: Border(
+            left: BorderSide(color: color, width: 4),
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: color, size: 20),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                message,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: color,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            Icon(Icons.chevron_right, color: color, size: 20),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -232,12 +472,12 @@ class _QuickActionCard extends StatelessWidget {
 
 class _SubscriptionProgressCard extends StatelessWidget {
   final Subscription subscription;
-  final bool isGreek;
+  final String locale;
   final VoidCallback onTap;
 
   const _SubscriptionProgressCard({
     required this.subscription,
-    required this.isGreek,
+    required this.locale,
     required this.onTap,
   });
 
@@ -297,7 +537,7 @@ class _SubscriptionProgressCard extends StatelessWidget {
                     ),
                     if (subscription.remaining.isNotEmpty)
                       Text(
-                        '${subscription.remaining} ${isGreek ? 'απομένουν' : 'remaining'}',
+                        '${subscription.remaining} ${l10n.remaining}',
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: theme.colorScheme.primary,
                           fontWeight: FontWeight.w600,
@@ -367,16 +607,16 @@ class _StatCard extends StatelessWidget {
 
 class _BookingCard extends StatelessWidget {
   final Booking booking;
-  final bool isGreek;
+  final String locale;
 
-  const _BookingCard({required this.booking, required this.isGreek});
+  const _BookingCard({required this.booking, required this.locale});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final classTime = du.parseBookingDateTime(booking.date, booking.time);
     final countdown = classTime != null
-        ? du.formatCountdown(classTime, isGreek: isGreek)
+        ? du.formatCountdown(classTime, locale: locale)
         : '';
     final isPast = classTime != null && classTime.isBefore(DateTime.now());
 

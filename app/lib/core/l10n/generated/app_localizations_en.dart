@@ -313,6 +313,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get english => 'English';
 
   @override
+  String get russian => 'Русский';
+
+  @override
   String get today => 'Today';
 
   @override
@@ -439,4 +442,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get viewAll => 'View All';
+
+  @override
+  String get todaysClass => 'Today\'s Class';
+
+  @override
+  String get showBarcode => 'Show Barcode';
+
+  @override
+  String lowBalanceWarning(int count, String name) {
+    return 'Only $count classes remaining on $name!';
+  }
+
+  @override
+  String get bookAgain => 'Book Again';
+
+  @override
+  String get viewMyBookings => 'View My Bookings';
+
+  @override
+  String get bookAnotherClass => 'Book Another Class';
+
+  @override
+  String get addToWallet => 'Add to Wallet';
+
+  @override
+  String get comingSoon => 'Coming soon!';
+
+  @override
+  String get nextClass => 'Next Class';
+
+  @override
+  String get totalCount => 'Total';
+
+  @override
+  String get thisMonth => 'This Month';
+
+  @override
+  String waitlistAlert(int count) {
+    return 'You have $count items on the waitlist';
+  }
+
+  @override
+  String cancellationsAlert(int count) {
+    return '$count class cancellations';
+  }
 }

@@ -65,7 +65,7 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final state = ref.watch(bookingsProvider);
-    final isGreek = ref.watch(settingsProvider).locale.languageCode == 'el';
+    final locale = ref.watch(settingsProvider).locale.languageCode;
     final theme = Theme.of(context);
 
     // Split bookings into upcoming and past
@@ -137,7 +137,7 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
                         const SizedBox(height: 8),
                         ...upcoming.map((b) => _BookingListItem(
                               booking: b,
-                              isGreek: isGreek,
+                              locale: locale,
                               onCancel: b.canCancel
                                   ? () => _cancelBooking(b)
                                   : null,
@@ -156,10 +156,12 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
                         const SizedBox(height: 8),
                         ...past.map((b) => _BookingListItem(
                               booking: b,
-                              isGreek: isGreek,
+                              locale: locale,
                               onCancel: b.canCancel
                                   ? () => _cancelBooking(b)
                                   : null,
+                              onRebook: () => context.go(
+                                  '/book-class?courseType=${Uri.encodeComponent(b.course)}'),
                             )),
                       ],
                     ],
@@ -201,13 +203,15 @@ class _SectionHeader extends StatelessWidget {
 
 class _BookingListItem extends StatelessWidget {
   final Booking booking;
-  final bool isGreek;
+  final String locale;
   final VoidCallback? onCancel;
+  final VoidCallback? onRebook;
 
   const _BookingListItem({
     required this.booking,
-    required this.isGreek,
+    required this.locale,
     this.onCancel,
+    this.onRebook,
   });
 
   @override
@@ -217,7 +221,7 @@ class _BookingListItem extends StatelessWidget {
     final classTime = du.parseBookingDateTime(booking.date, booking.time);
     final isPast = classTime != null && classTime.isBefore(DateTime.now());
     final countdown = classTime != null
-        ? du.formatCountdown(classTime, isGreek: isGreek)
+        ? du.formatCountdown(classTime, locale: locale)
         : '';
 
     Color statusColor;
@@ -287,7 +291,7 @@ class _BookingListItem extends StatelessWidget {
                 ),
               ],
             ),
-            if (countdown.isNotEmpty || onCancel != null) ...[
+            if (countdown.isNotEmpty || onCancel != null || onRebook != null) ...[
               const SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -301,6 +305,13 @@ class _BookingListItem extends StatelessWidget {
                             : theme.colorScheme.primary,
                         fontWeight: FontWeight.w500,
                       ),
+                    ),
+                  if (onRebook != null)
+                    TextButton.icon(
+                      onPressed: onRebook,
+                      icon: Icon(Icons.replay,
+                          size: 18, color: theme.colorScheme.primary),
+                      label: Text(l10n.bookAgain),
                     ),
                   if (onCancel != null)
                     TextButton.icon(

@@ -314,6 +314,9 @@ class AppLocalizationsEl extends AppLocalizations {
   String get english => 'English';
 
   @override
+  String get russian => 'Русский';
+
+  @override
   String get today => 'Σήμερα';
 
   @override
@@ -440,4 +443,49 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get viewAll => 'Προβολή Όλων';
+
+  @override
+  String get todaysClass => 'Σημερινό Μάθημα';
+
+  @override
+  String get showBarcode => 'Εμφάνιση Barcode';
+
+  @override
+  String lowBalanceWarning(int count, String name) {
+    return 'Μόνο $count μαθήματα απομένουν στη $name!';
+  }
+
+  @override
+  String get bookAgain => 'Κράτηση Ξανά';
+
+  @override
+  String get viewMyBookings => 'Οι Κρατήσεις μου';
+
+  @override
+  String get bookAnotherClass => 'Κράτηση Νέου Μαθήματος';
+
+  @override
+  String get addToWallet => 'Προσθήκη στο Wallet';
+
+  @override
+  String get comingSoon => 'Σύντομα διαθέσιμο!';
+
+  @override
+  String get nextClass => 'Επόμενο Μάθημα';
+
+  @override
+  String get totalCount => 'Σύνολο';
+
+  @override
+  String get thisMonth => 'Αυτόν τον Μήνα';
+
+  @override
+  String waitlistAlert(int count) {
+    return 'Έχετε $count στοιχεία στη λίστα αναμονής';
+  }
+
+  @override
+  String cancellationsAlert(int count) {
+    return '$count ακυρώσεις μαθημάτων';
+  }
 }

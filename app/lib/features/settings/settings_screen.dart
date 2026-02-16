@@ -117,15 +117,18 @@ class SettingsScreen extends ConsumerWidget {
                       segments: [
                         ButtonSegment(
                           value: ThemeMode.system,
-                          label: Text(l10n.themeSystem),
+                          label: Text(l10n.themeSystem,
+                              maxLines: 1, overflow: TextOverflow.ellipsis),
                         ),
                         ButtonSegment(
                           value: ThemeMode.light,
-                          label: Text(l10n.themeLight),
+                          label: Text(l10n.themeLight,
+                              maxLines: 1, overflow: TextOverflow.ellipsis),
                         ),
                         ButtonSegment(
                           value: ThemeMode.dark,
-                          label: Text(l10n.themeDark),
+                          label: Text(l10n.themeDark,
+                              maxLines: 1, overflow: TextOverflow.ellipsis),
                         ),
                       ],
                       selected: {settings.themeMode},
@@ -163,11 +166,18 @@ class SettingsScreen extends ConsumerWidget {
                       segments: [
                         ButtonSegment(
                           value: 'el',
-                          label: Text(l10n.greek),
+                          label: Text(l10n.greek,
+                              maxLines: 1, overflow: TextOverflow.ellipsis),
                         ),
                         ButtonSegment(
                           value: 'en',
-                          label: Text(l10n.english),
+                          label: Text(l10n.english,
+                              maxLines: 1, overflow: TextOverflow.ellipsis),
+                        ),
+                        ButtonSegment(
+                          value: 'ru',
+                          label: Text(l10n.russian,
+                              maxLines: 1, overflow: TextOverflow.ellipsis),
                         ),
                       ],
                       selected: {settings.locale.languageCode},

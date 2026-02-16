@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:swim_college_app/core/l10n/generated/app_localizations.dart';
+import '../../core/date_utils.dart' as du;
 import '../../core/widgets/loading_widget.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/error_state.dart';
@@ -53,8 +54,19 @@ class SubscriptionsScreen extends ConsumerWidget {
               itemCount: subs.length,
               itemBuilder: (context, index) {
                 final sub = subs[index];
+                final progress = du.parseAttendances(sub.attendances);
+                final isLowBalance = progress != null &&
+                    progress.total > 0 &&
+                    (progress.total - progress.used) <= 3;
+
                 return Card(
                   margin: const EdgeInsets.only(bottom: 12),
+                  shape: isLowBalance
+                      ? RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          side: const BorderSide(color: Colors.amber, width: 2),
+                        )
+                      : null,
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
@@ -104,12 +116,55 @@ class SubscriptionsScreen extends ConsumerWidget {
                             icon: Icons.check_circle,
                             label: l10n.subscriptionAttendances,
                             value: sub.attendances),
-                        if (sub.remaining.isNotEmpty) ...[
-                          const SizedBox(height: 4),
-                          _InfoRow(
-                              icon: Icons.hourglass_bottom,
-                              label: '',
-                              value: sub.remaining),
+                        // Progress bar
+                        if (progress != null && progress.total > 0) ...[
+                          const SizedBox(height: 12),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: LinearProgressIndicator(
+                              value: progress.used / progress.total,
+                              minHeight: 8,
+                              backgroundColor:
+                                  theme.colorScheme.primaryContainer.withAlpha(100),
+                              color: isLowBalance
+                                  ? Colors.amber
+                                  : theme.colorScheme.primary,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            '${progress.total - progress.used} ${l10n.remaining}',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: isLowBalance
+                                  ? Colors.amber.shade800
+                                  : theme.colorScheme.primary,
+                            ),
+                          ),
+                        ],
+                        // Low balance warning
+                        if (isLowBalance) ...[
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              const Icon(Icons.warning_amber,
+                                  color: Colors.amber, size: 16),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  l10n.lowBalanceWarning(
+                                    progress.total - progress.used,
+                                    sub.name,
+                                  ),
+                                  style: TextStyle(
+                                    color: Colors.amber.shade800,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ],
                     ),

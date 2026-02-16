@@ -50,9 +50,12 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: '/book-class',
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: BookClassScreen(),
-            ),
+            pageBuilder: (context, state) {
+              final courseType = state.uri.queryParameters['courseType'];
+              return NoTransitionPage(
+                child: BookClassScreen(preselectedCourse: courseType),
+              );
+            },
           ),
           GoRoute(
             path: '/barcode',
